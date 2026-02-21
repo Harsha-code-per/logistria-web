@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Papa from "papaparse";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -9,13 +10,10 @@ import {
   onSnapshot,
   writeBatch,
   doc,
-  addDoc,
-  setDoc,
   Timestamp,
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -34,7 +32,7 @@ import {
   LogOut,
   Loader2,
   Radio,
-  Box,
+  Database,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -55,44 +53,6 @@ interface Order {
   timestamp: Timestamp | null;
 }
 
-const NY_LAT_BASE = 40.712;
-const NY_LNG_BASE = -74.006;
-const rand = (min: number, max: number) =>
-  +(Math.random() * (max - min) + min).toFixed(4);
-
-async function initializeWorldState() {
-  const batch = writeBatch(db);
-
-  const trucks = [
-    { name: "TRK-Alpha-01", status: "MOVING" },
-    { name: "TRK-Beta-02", status: "DELAYED" },
-    { name: "TRK-Gamma-03", status: "MOVING" },
-    { name: "TRK-Delta-04", status: "MOVING" },
-    { name: "TRK-Epsilon-05", status: "DELAYED" },
-  ];
-  trucks.forEach((t) => {
-    const ref = doc(collection(db, "trucks"));
-    batch.set(ref, {
-      ...t,
-      lat: rand(NY_LAT_BASE - 0.15, NY_LAT_BASE + 0.15),
-      lng: rand(NY_LNG_BASE - 0.15, NY_LNG_BASE + 0.15),
-      updatedAt: Timestamp.now(),
-    });
-  });
-
-  const inventory = [
-    { name: "Semiconductors", stock: rand(500, 5000), unit: "units", category: "Electronics" },
-    { name: "Engine Blocks", stock: rand(20, 200), unit: "units", category: "Automotive" },
-    { name: "Fiber Optic Cables", stock: rand(1000, 10000), unit: "meters", category: "Infrastructure" },
-  ];
-  inventory.forEach((item) => {
-    const ref = doc(collection(db, "inventory"));
-    batch.set(ref, { ...item, updatedAt: Timestamp.now() });
-  });
-
-  await batch.commit();
-}
-
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -106,7 +66,6 @@ export default function AdminPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [initializing, setInitializing] = useState(false);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
 
@@ -140,72 +99,74 @@ export default function AdminPage() {
     };
   }, [authLoading]);
 
-  async function handleInitialize() {
-    setInitializing(true);
-    try {
-      await initializeWorldState();
-      toast.success("World State initialized! Firestore updated with mock data.");
-    } catch {
-      toast.error("Failed to initialize world state.");
-    } finally {
-      setInitializing(false);
-    }
-  }
-
   async function handleSignOut() {
     await signOut(auth);
     router.replace("/login");
   }
 
-  // ── Add Inventory SKU form state ──────────────────────────
-  const [invForm, setInvForm] = useState({ name: "", category: "", stock: "" });
-  const [addingInv, setAddingInv] = useState(false);
+  // ── Bulk ERP Import state ──────────────────────────────────
+  const [csvCollection, setCsvCollection] = useState<"inventory" | "trucks">("inventory");
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvUploading, setCsvUploading] = useState(false);
+  const csvInputRef = useRef<HTMLInputElement>(null);
 
-  async function handleAddInventory(e: React.FormEvent) {
-    e.preventDefault();
-    if (!invForm.name || !invForm.category || !invForm.stock) return;
-    setAddingInv(true);
+  async function handleFileUpload() {
+    if (!csvFile) {
+      toast.error("Please select a CSV file first.");
+      return;
+    }
+    setCsvUploading(true);
     try {
-      await addDoc(collection(db, "inventory"), {
-        name: invForm.name.trim(),
-        category: invForm.category.trim(),
-        stock: parseFloat(invForm.stock),
-        unit: "units",
-        updatedAt: Timestamp.now(),
+      const results = await new Promise<Papa.ParseResult<Record<string, string>>>(
+        (resolve, reject) =>
+          Papa.parse<Record<string, string>>(csvFile, {
+            header: true,
+            skipEmptyLines: true,
+            complete: resolve,
+            error: reject,
+          })
+      );
+      const rows = results.data;
+      if (rows.length === 0) {
+        toast.error("CSV is empty or has no valid rows.");
+        return;
+      }
+      const batch = writeBatch(db);
+      rows.forEach((row) => {
+        if (csvCollection === "inventory") {
+          const ref = doc(collection(db, "inventory"));
+          batch.set(ref, {
+            name: row.name ?? "",
+            category: row.category ?? "",
+            stock: parseFloat(row.stock) || 0,
+            unit: "units",
+            updatedAt: Timestamp.now(),
+          });
+        } else {
+          const truckId = (row.id ?? row.name ?? "").trim();
+          const ref = truckId
+            ? doc(db, "trucks", truckId)
+            : doc(collection(db, "trucks"));
+          batch.set(ref, {
+            name: truckId || ref.id,
+            lat: parseFloat(row.lat) || 0,
+            lng: parseFloat(row.lng) || 0,
+            status: row.status ?? "IDLE",
+            updatedAt: Timestamp.now(),
+          });
+        }
       });
-      toast.success(`"${invForm.name}" added to inventory.`);
-      setInvForm({ name: "", category: "", stock: "" });
+      await batch.commit();
+      toast.success(`${rows.length} record${rows.length !== 1 ? "s" : ""} imported successfully.`);
+      setCsvFile(null);
+      if (csvInputRef.current) csvInputRef.current.value = "";
     } catch {
-      toast.error("Failed to add inventory item.");
+      toast.error("Failed to process CSV. Check the file format and try again.");
     } finally {
-      setAddingInv(false);
+      setCsvUploading(false);
     }
   }
 
-  // ── Register Fleet Asset form state ───────────────────────
-  const [truckForm, setTruckForm] = useState({ id: "", lat: "", lng: "" });
-  const [addingTruck, setAddingTruck] = useState(false);
-
-  async function handleAddTruck(e: React.FormEvent) {
-    e.preventDefault();
-    if (!truckForm.id || !truckForm.lat || !truckForm.lng) return;
-    setAddingTruck(true);
-    try {
-      await setDoc(doc(db, "trucks", truckForm.id.trim()), {
-        name: truckForm.id.trim(),
-        lat: parseFloat(truckForm.lat),
-        lng: parseFloat(truckForm.lng),
-        status: "IDLE",
-        updatedAt: Timestamp.now(),
-      });
-      toast.success(`Truck "${truckForm.id}" dispatched successfully.`);
-      setTruckForm({ id: "", lat: "", lng: "" });
-    } catch {
-      toast.error("Failed to register truck.");
-    } finally {
-      setAddingTruck(false);
-    }
-  }
 
   if (authLoading) {
     return (
@@ -282,8 +243,7 @@ export default function AdminPage() {
           </div>
           <p className="text-slate-400 ml-10 text-sm tracking-wide">
             Real-time telemetry · Inventory management · Order processing
-          </p>
-        </motion.div>
+          </p>        </motion.div>
 
         {/* Stats Row */}
         <motion.div
@@ -325,189 +285,82 @@ export default function AdminPage() {
           ))}
         </motion.div>
 
-        {/* Initialize World State */}
-        <motion.div
-          custom={2}
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          className="bg-slate-900/50 backdrop-blur-md border border-[#FF8C00]/30 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-          style={{ boxShadow: "0 0 40px rgba(255,140,0,0.08)" }}
-        >
-          <div>
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Zap className="size-5 text-[#FF8C00]" />
-              Data Injection Panel
-            </h2>
-            <p className="text-slate-400 text-sm mt-1">
-              Populate Firestore with mock trucks, inventory, and set system to operational state.
-            </p>
-          </div>
-          <Button
-            onClick={handleInitialize}
-            disabled={initializing}
-            className="shrink-0 bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold px-6 h-11 shadow-lg shadow-[#FF8C00]/40 hover:shadow-[#FF8C00]/60 transition-all duration-200 hover:scale-[1.02] tracking-wider"
-          >
-            {initializing ? (
-              <>
-                <Loader2 className="size-4 animate-spin" />
-                Initializing…
-              </>
-            ) : (
-              <>
-                <Zap className="size-4" />
-                Initialize World State (Demo)
-              </>
-            )}
-          </Button>
-        </motion.div>
-
-        {/* ── Manual Data Entry Forms ─────────────────────────── */}
+        {/* ── CSV Data Injection ─────────────────────────────── */}
         <motion.div
           custom={3}
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="grid lg:grid-cols-2 gap-6"
+          className="max-w-lg"
         >
-          {/* Card 1 — Add Inventory SKU */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
+          <div
+            className="bg-slate-900/50 backdrop-blur-md border border-[#00C9B1]/20 rounded-2xl overflow-hidden"
+            style={{ boxShadow: "0 0 40px rgba(0,201,177,0.07)" }}
+          >
             <div className="px-6 py-4 border-b border-white/10 flex items-center gap-3">
               <div className="p-2 rounded-lg bg-[#00C9B1]/10 border border-[#00C9B1]/20">
-                <Box className="size-4 text-[#00C9B1]" />
+                <Database className="size-4 text-[#00C9B1]" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-white tracking-wide">Add New Product</h2>
-                <p className="text-slate-500 text-xs">Push a new SKU to the inventory collection</p>
+                <h2 className="text-sm font-bold text-white tracking-wide">Bulk ERP Import (CSV)</h2>
+                <p className="text-slate-500 text-xs">Batch-ingest records from an ERP export file</p>
               </div>
             </div>
-            <form onSubmit={handleAddInventory} className="p-6 space-y-4">
+            <div className="p-6 space-y-4">
+              {/* Collection selector */}
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  Product Name
+                  Target Collection
                 </label>
-                <Input
-                  placeholder="e.g. Lithium Batteries"
-                  value={invForm.name}
-                  onChange={(e) => setInvForm((f) => ({ ...f, name: e.target.value }))}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#00C9B1] h-10"
-                />
+                <select
+                  value={csvCollection}
+                  onChange={(e) => setCsvCollection(e.target.value as "inventory" | "trucks")}
+                  className="w-full h-10 px-3 rounded-md bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00C9B1] transition-colors appearance-none cursor-pointer"
+                >
+                  <option value="inventory">Inventory</option>
+                  <option value="trucks">Trucks</option>
+                </select>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  Category
-                </label>
-                <Input
-                  placeholder="e.g. Energy"
-                  value={invForm.category}
-                  onChange={(e) => setInvForm((f) => ({ ...f, category: e.target.value }))}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#00C9B1] h-10"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  Initial Stock
-                </label>
-                <Input
-                  type="number"
-                  min={0}
-                  placeholder="e.g. 5000"
-                  value={invForm.stock}
-                  onChange={(e) => setInvForm((f) => ({ ...f, stock: e.target.value }))}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#00C9B1] h-10 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <Button
-                type="submit"
-                disabled={addingInv}
-                className="w-full h-10 bg-teal-500 hover:bg-teal-600 text-black font-bold tracking-wider text-sm shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all duration-200"
-              >
-                {addingInv ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <>
-                    <Box className="size-4" />
-                    Add to Inventory
-                  </>
-                )}
-              </Button>
-            </form>
-          </div>
 
-          {/* Card 2 — Register Fleet Asset */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-white/10 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-[#FF8C00]/10 border border-[#FF8C00]/20">
-                <Truck className="size-4 text-[#FF8C00]" />
-              </div>
-              <div>
-                <h2 className="text-sm font-bold text-white tracking-wide">Register New Truck</h2>
-                <p className="text-slate-500 text-xs">Add a fleet asset to the trucks collection</p>
-              </div>
-            </div>
-            <form onSubmit={handleAddTruck} className="p-6 space-y-4">
+              {/* File input */}
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  Truck ID
+                  CSV File
                 </label>
-                <Input
-                  placeholder="e.g. TRK-009"
-                  value={truckForm.id}
-                  onChange={(e) => setTruckForm((f) => ({ ...f, id: e.target.value }))}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#FF8C00] h-10 font-mono"
+                <input
+                  ref={csvInputRef}
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setCsvFile(e.target.files?.[0] ?? null)}
+                  className="w-full h-10 text-sm text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#00C9B1]/10 file:text-[#00C9B1] hover:file:bg-[#00C9B1]/20 file:cursor-pointer cursor-pointer bg-black/40 border border-white/10 rounded-md px-3 focus:outline-none focus:border-[#00C9B1] transition-colors"
                 />
+                <p className="text-slate-600 text-xs leading-relaxed">
+                  {csvCollection === "inventory"
+                    ? "Expected columns: name, category, stock"
+                    : "Expected columns: id, lat, lng, status"}
+                </p>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  Starting Latitude
-                </label>
-                <Input
-                  type="number"
-                  step="any"
-                  placeholder="e.g. 40.7128"
-                  value={truckForm.lat}
-                  onChange={(e) => setTruckForm((f) => ({ ...f, lat: e.target.value }))}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#FF8C00] h-10 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  Starting Longitude
-                </label>
-                <Input
-                  type="number"
-                  step="any"
-                  placeholder="e.g. -74.0060"
-                  value={truckForm.lng}
-                  onChange={(e) => setTruckForm((f) => ({ ...f, lng: e.target.value }))}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#FF8C00] h-10 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
+
               <Button
-                type="submit"
-                disabled={addingTruck}
-                className="w-full h-10 bg-orange-500 hover:bg-orange-600 text-black font-bold tracking-wider text-sm shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all duration-200"
+                onClick={handleFileUpload}
+                disabled={csvUploading || !csvFile}
+                className="w-full h-10 bg-teal-500 hover:bg-teal-400 disabled:opacity-40 text-black font-bold tracking-wider text-sm shadow-lg shadow-teal-500/20 hover:shadow-teal-500/50 transition-all duration-200"
               >
-                {addingTruck ? (
-                  <Loader2 className="size-4 animate-spin" />
+                {csvUploading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Processing…
+                  </>
                 ) : (
                   <>
-                    <Truck className="size-4" />
-                    Dispatch Truck
+                    <Database className="size-4" />
+                    Process &amp; Upload CSV
                   </>
                 )}
               </Button>
-            </form>
+            </div>
           </div>
         </motion.div>
-
-        {/* Inventory Table */}
         <motion.div
           custom={4}
           initial="hidden"
