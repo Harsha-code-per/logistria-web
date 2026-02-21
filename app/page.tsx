@@ -1,17 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import {
   Box,
   Truck,
   TrendingUp,
   Zap,
   ArrowRight,
-  ChevronRight,
   Globe,
   Shield,
   Activity,
@@ -98,54 +98,103 @@ const STATS = [
    Components
 ───────────────────────────────────────────── */
 
-function Navbar() {
+/* ─────────────────────────────────────────────
+   Truck SVG (side-view lorry)
+───────────────────────────────────────────── */
+function TruckSVG() {
   return (
-    <motion.nav
-      initial={{ opacity: 0, y: -16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-[#081021]/80 backdrop-blur-xl border-b border-white/[0.06]"
+    <svg
+      width="520"
+      height="160"
+      viewBox="0 0 520 160"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      style={{ filter: "drop-shadow(0 0 14px #00C9B1aa) drop-shadow(0 0 6px #FF8C0066)" }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <span
-            className="text-xl font-black tracking-[0.28em] text-white group-hover:text-white/90 transition-colors"
-            style={{ fontFamily: "var(--font-geist-mono)" }}
-          >
-            LOGISTRIA
-          </span>
-          <span className="size-2 rounded-full bg-[#00C9B1] shadow-lg shadow-[#00C9B1]/60 animate-pulse" />
-        </Link>
+      {/* Trailer body */}
+      <rect x="4" y="16" width="296" height="96" rx="6" fill="#061120" stroke="#00C9B1" strokeWidth="2.5" />
+      {/* Trailer ribbing */}
+      {[70, 140, 210, 280].map((x) => (
+        <line key={x} x1={x} y1="16" x2={x} y2="112" stroke="#00C9B1" strokeOpacity="0.35" strokeWidth="1.5" />
+      ))}
+      {/* Trailer top accent stripe */}
+      <rect x="4" y="16" width="296" height="6" rx="3" fill="#00C9B1" fillOpacity="0.35" />
+      {/* Company branding on trailer */}
+      <text x="72" y="72" fill="#00C9B1" fillOpacity="0.95" fontSize="18" fontFamily="monospace" fontWeight="800" letterSpacing="5">LOGISTRIA</text>
+      <text x="84" y="92" fill="#FF8C00" fillOpacity="0.85" fontSize="11" fontFamily="monospace" fontWeight="600" letterSpacing="3">SUPPLY CHAIN</text>
+      {/* Teal glow strip on trailer bottom */}
+      <rect x="4" y="106" width="296" height="6" rx="3" fill="#00C9B1" fillOpacity="0.3" />
 
-        {/* Nav links — desktop */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-slate-400">
-          {["Platform", "Solutions", "Pricing", "About"].map((item) => (
-            <button
-              key={item}
-              className="hover:text-white transition-colors tracking-wide"
-            >
-              {item}
-            </button>
-          ))}
-        </div>
+      {/* Cab body */}
+      <path d="M300 32 L300 112 L472 112 L472 72 L442 32 L300 32 Z" fill="#061120" stroke="#00C9B1" strokeWidth="2.5" />
+      {/* Cab roof accent */}
+      <path d="M300 32 L442 32 L472 72 L300 72 Z" fill="#00C9B1" fillOpacity="0.06" />
+      {/* Cab door line */}
+      <line x1="378" y1="68" x2="378" y2="112" stroke="#00C9B1" strokeOpacity="0.45" strokeWidth="1.5" />
+      {/* Door handle */}
+      <rect x="356" y="88" width="14" height="4" rx="2" fill="#00C9B1" fillOpacity="0.75" />
+      {/* Windshield */}
+      <path d="M340 40 L340 80 L468 80 L468 72 L442 40 Z" fill="#00C9B1" fillOpacity="0.18" stroke="#00C9B1" strokeOpacity="0.7" strokeWidth="1.5" />
+      {/* Windshield inner glow */}
+      <path d="M348 46 L348 75 L460 75 L460 71 L438 46 Z" fill="#00C9B1" fillOpacity="0.07" />
+      {/* Windshield wiper */}
+      <line x1="368" y1="79" x2="418" y2="48" stroke="#00C9B1" strokeOpacity="0.5" strokeWidth="1.5" />
+      {/* Headlight */}
+      <rect x="465" y="70" width="14" height="20" rx="3" fill="#FFD580" fillOpacity="1" />
+      <rect x="462" y="68" width="18" height="24" rx="4" fill="#FFB84D" fillOpacity="0.25" style={{ filter: "blur(6px)" }} />
+      {/* Headlight beam */}
+      <polygon points="479,75 510,62 510,98 479,90" fill="#FFD580" fillOpacity="0.12" />
+      {/* Side mirror */}
+      <rect x="468" y="48" width="10" height="14" rx="2" fill="#1E293B" stroke="#00C9B1" strokeOpacity="0.7" strokeWidth="1.5" />
+      {/* Exhaust stack */}
+      <rect x="322" y="4" width="8" height="30" rx="3" fill="#374151" stroke="#4B5563" strokeWidth="1" />
+      <ellipse cx="326" cy="4" rx="5" ry="3" fill="#4B5563" />
+      {/* Exhaust smoke puffs */}
+      <circle cx="326" cy="2" r="4" fill="#4B5563" fillOpacity="0.4" />
+      <circle cx="330" cy="-4" r="5" fill="#4B5563" fillOpacity="0.2" />
 
-        {/* CTA */}
-        <Link href="/login">
-          <Button className="bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold tracking-wider text-sm h-9 px-5 shadow-lg shadow-[#FF8C00]/25 hover:shadow-[#FF8C00]/50 transition-all duration-200 hover:scale-[1.02]">
-            Access Control Tower
-            <ChevronRight className="size-4" />
-          </Button>
-        </Link>
-      </div>
-    </motion.nav>
+      {/* Connector hitch */}
+      <rect x="290" y="64" width="20" height="30" rx="3" fill="#1E293B" stroke="#374151" strokeWidth="1.5" />
+
+      {/* Undercarriage detail */}
+      <rect x="4" y="112" width="296" height="8" rx="2" fill="#0A1830" stroke="#1E3050" strokeWidth="1" />
+      <rect x="300" y="112" width="172" height="8" rx="2" fill="#0A1830" stroke="#1E3050" strokeWidth="1" />
+
+      {/* Rear trailer wheel pair */}
+      <g className="wheel-spin">
+        <circle cx="82" cy="128" r="24" fill="#061120" stroke="#FF8C00" strokeWidth="3" />
+        <circle cx="82" cy="128" r="10" fill="#FF8C00" fillOpacity="0.9" />
+        <circle cx="82" cy="128" r="16" fill="none" stroke="#FF8C00" strokeOpacity="0.25" strokeWidth="1.5" strokeDasharray="4 6" />
+        <line x1="82" y1="104" x2="82" y2="152" stroke="#FF8C00" strokeOpacity="0.4" strokeWidth="2" />
+        <line x1="58" y1="128" x2="106" y2="128" stroke="#FF8C00" strokeOpacity="0.4" strokeWidth="2" />
+      </g>
+      <g className="wheel-spin">
+        <circle cx="192" cy="128" r="24" fill="#061120" stroke="#FF8C00" strokeWidth="3" />
+        <circle cx="192" cy="128" r="10" fill="#FF8C00" fillOpacity="0.9" />
+        <circle cx="192" cy="128" r="16" fill="none" stroke="#FF8C00" strokeOpacity="0.25" strokeWidth="1.5" strokeDasharray="4 6" />
+        <line x1="192" y1="104" x2="192" y2="152" stroke="#FF8C00" strokeOpacity="0.4" strokeWidth="2" />
+        <line x1="168" y1="128" x2="216" y2="128" stroke="#FF8C00" strokeOpacity="0.4" strokeWidth="2" />
+      </g>
+      {/* Front cab wheel */}
+      <g className="wheel-spin">
+        <circle cx="406" cy="128" r="24" fill="#061120" stroke="#FF8C00" strokeWidth="3" />
+        <circle cx="406" cy="128" r="10" fill="#FF8C00" fillOpacity="0.9" />
+        <circle cx="406" cy="128" r="16" fill="none" stroke="#FF8C00" strokeOpacity="0.25" strokeWidth="1.5" strokeDasharray="4 6" />
+        <line x1="406" y1="104" x2="406" y2="152" stroke="#FF8C00" strokeOpacity="0.4" strokeWidth="2" />
+        <line x1="382" y1="128" x2="430" y2="128" stroke="#FF8C00" strokeOpacity="0.4" strokeWidth="2" />
+      </g>
+
+      {/* Ground shadow / glow */}
+      <ellipse cx="260" cy="154" rx="240" ry="6" fill="#00C9B1" fillOpacity="0.12" />
+    </svg>
   );
 }
 
 function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* Radial glow — globe effect */}
+      {/* Radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -162,21 +211,40 @@ function HeroSection() {
           backgroundSize: "72px 72px",
         }}
       />
-      {/* Corner flares */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#FF8C00]/4 blur-[120px] pointer-events-none" />
-      <div className="absolute top-2/3 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full bg-[#00C9B1]/5 blur-[100px] pointer-events-none" />
+      {/* Ambient blobs */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[700px] h-[500px] md:h-[700px] rounded-full bg-[#FF8C00]/4 blur-[120px] pointer-events-none" />
+      <div className="absolute top-2/3 left-1/2 -translate-x-1/2 w-[350px] md:w-[500px] h-[200px] md:h-[300px] rounded-full bg-[#00C9B1]/5 blur-[100px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+      {/* ── Truck animation ── */}
+      <div
+        className="truck-ride absolute pointer-events-none select-none"
+        style={{ bottom: "10%", left: 0, opacity: 0.82, willChange: "transform" }}
+      >
+        <TruckSVG />
+      </div>
+      {/* Road line */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          bottom: "calc(10% - 2px)",
+          left: 0,
+          right: 0,
+          height: "2px",
+          background: "linear-gradient(90deg, transparent, rgba(0,201,177,0.3) 15%, rgba(0,201,177,0.3) 85%, transparent)",
+        }}
+      />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
         {/* Badge */}
         <motion.div
           custom={0}
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="inline-flex items-center gap-2 rounded-full border border-[#00C9B1]/30 bg-[#00C9B1]/5 px-4 py-1.5 mb-8"
+          className="inline-flex items-center gap-2 rounded-full border border-[#00C9B1]/30 bg-[#00C9B1]/5 px-3 sm:px-4 py-1.5 mb-6 sm:mb-8"
         >
           <Activity className="size-3.5 text-[#00C9B1]" />
-          <span className="text-[#00C9B1] text-xs font-semibold tracking-[0.2em] uppercase">
+          <span className="text-[#00C9B1] text-[10px] sm:text-xs font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase">
             Now in Open Beta · Multi-Agent AI Platform
           </span>
         </motion.div>
@@ -187,7 +255,7 @@ function HeroSection() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="text-5xl sm:text-6xl md:text-7xl font-black leading-[1.05] tracking-tight mb-6"
+          className="text-4xl sm:text-6xl md:text-7xl font-black leading-[1.05] tracking-tight mb-5 sm:mb-6"
         >
           <span
             className="text-transparent bg-clip-text"
@@ -208,7 +276,7 @@ function HeroSection() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10"
+          className="text-slate-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10"
         >
           Logistria uses autonomous{" "}
           <span className="text-white font-semibold">Multi-Agent AI</span> to
@@ -223,21 +291,23 @@ function HeroSection() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
         >
-          <Link href="/store">
-            <Button className="h-12 px-8 bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold text-base tracking-wide shadow-2xl shadow-[#FF8C00]/30 hover:shadow-[#FF8C00]/50 transition-all duration-200 hover:scale-[1.03]">
+          <Link href="/store" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto h-12 px-8 bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold text-base tracking-wide shadow-2xl shadow-[#FF8C00]/30 hover:shadow-[#FF8C00]/50 transition-all duration-200 hover:scale-[1.03]">
               Request Demo
               <ArrowRight className="size-4 ml-1" />
             </Button>
           </Link>
-          <Button
-            variant="outline"
-            className="h-12 px-8 bg-slate-900/50 backdrop-blur-md border-white/15 text-white hover:bg-white/10 hover:border-white/30 font-semibold text-base transition-all duration-200"
-          >
-            <Globe className="size-4 mr-2 text-[#00C9B1]" />
-            Explore Technology
-          </Button>
+          <Link href="/platform" className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto h-12 px-8 bg-slate-900/50 backdrop-blur-md border-white/15 text-white hover:bg-white/10 hover:border-white/30 font-semibold text-base transition-all duration-200"
+            >
+              <Globe className="size-4 mr-2 text-[#00C9B1]" />
+              Explore Platform
+            </Button>
+          </Link>
         </motion.div>
 
         {/* Floating metric pills */}
@@ -246,7 +316,7 @@ function HeroSection() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="flex flex-wrap items-center justify-center gap-3 mt-14"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-10 sm:mt-14"
         >
           {[
             { icon: Shield, text: "SOC 2 Type II", color: "#00C9B1" },
@@ -255,7 +325,7 @@ function HeroSection() {
           ].map(({ icon: Icon, text, color }) => (
             <div
               key={text}
-              className="flex items-center gap-2 rounded-full bg-slate-900/60 backdrop-blur border border-white/10 px-4 py-2"
+              className="flex items-center gap-2 rounded-full bg-slate-900/60 backdrop-blur border border-white/10 px-3 sm:px-4 py-2"
             >
               <Icon className="size-3.5" style={{ color }} />
               <span className="text-slate-300 text-xs font-medium">{text}</span>
@@ -271,7 +341,7 @@ function TrustBanner() {
   const { ref, inView } = useScrollReveal();
   return (
     <section ref={ref} className="border-y border-white/[0.06] bg-slate-900/30 backdrop-blur-sm py-8">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.p
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -305,7 +375,7 @@ function TrustBanner() {
 function StatsBar() {
   const { ref, inView } = useScrollReveal();
   return (
-    <section ref={ref} className="py-16 max-w-7xl mx-auto px-6">
+    <section ref={ref} className="py-16 max-w-7xl mx-auto px-4 sm:px-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {STATS.map((s, i) => (
           <motion.div
@@ -335,7 +405,7 @@ function StatsBar() {
 function FeaturesSection() {
   const { ref, inView } = useScrollReveal();
   return (
-    <section ref={ref} className="py-20 max-w-7xl mx-auto px-6">
+    <section ref={ref} className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
       {/* Header */}
       <motion.div
         custom={0}
@@ -450,7 +520,7 @@ function FeaturesSection() {
 function CtaBanner() {
   const { ref, inView } = useScrollReveal();
   return (
-    <section ref={ref} className="py-12 max-w-7xl mx-auto px-6">
+    <section ref={ref} className="py-12 max-w-7xl mx-auto px-4 sm:px-6">
       <motion.div
         custom={0}
         initial="hidden"
@@ -499,111 +569,6 @@ function CtaBanner() {
         </div>
       </motion.div>
     </section>
-  );
-}
-
-function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  function handleSubscribe(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email) return;
-    setSubscribed(true);
-    setEmail("");
-  }
-
-  return (
-    <footer className="border-t border-teal-500/20 bg-[#060e1c] mt-8">
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-3 gap-12 mb-14">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <span
-                className="text-2xl font-black tracking-[0.28em] text-white"
-                style={{ fontFamily: "var(--font-geist-mono)" }}
-              >
-                LOGISTRIA
-              </span>
-              <span className="size-2 rounded-full bg-[#00C9B1] shadow-lg shadow-[#00C9B1]/50" />
-            </div>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
-              Autonomous supply chain intelligence. From prediction to execution
-              — without human latency.
-            </p>
-          </div>
-
-          {/* Links */}
-          <div className="grid grid-cols-2 gap-6">
-            {[
-              { heading: "Platform", links: ["Control Tower", "AI Agents", "Analytics", "Integrations"] },
-              { heading: "Company", links: ["About", "Blog", "Careers", "Security"] },
-            ].map((col) => (
-              <div key={col.heading}>
-                <p className="text-white text-xs font-bold uppercase tracking-widest mb-4">
-                  {col.heading}
-                </p>
-                <ul className="space-y-2.5">
-                  {col.links.map((l) => (
-                    <li key={l}>
-                      <button className="text-slate-500 text-sm hover:text-slate-300 transition-colors">
-                        {l}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* Waitlist */}
-          <div>
-            <p className="text-white text-xs font-bold uppercase tracking-widest mb-2">
-              Join the Waitlist
-            </p>
-            <p className="text-slate-500 text-sm mb-4">
-              Get early access and exclusive launch pricing.
-            </p>
-            {subscribed ? (
-              <div className="flex items-center gap-2 text-[#00C9B1] text-sm font-semibold">
-                <Zap className="size-4" />
-                You're on the list!
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="you@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#00C9B1] h-10 text-sm flex-1"
-                />
-                <Button
-                  type="submit"
-                  className="h-10 px-4 bg-[#00C9B1] hover:bg-[#00C9B1]/90 text-black font-bold text-xs tracking-wider shrink-0 shadow-lg shadow-[#00C9B1]/20"
-                >
-                  Join
-                </Button>
-              </form>
-            )}
-          </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-slate-600 text-xs">
-          <p>© 2025 Logistria Technologies, Inc. All rights reserved.</p>
-          <div className="flex gap-6">
-            {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((l) => (
-              <button key={l} className="hover:text-slate-400 transition-colors">
-                {l}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 }
 

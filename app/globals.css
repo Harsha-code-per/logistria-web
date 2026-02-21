@@ -124,3 +124,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes truckRide {
+  0%   { transform: translateX(-560px); }
+  100% { transform: translateX(calc(100vw + 560px)); }
+}
+.truck-ride {
+  animation: truckRide 18s linear infinite;
+  left: 0;
+  position: absolute;
+}
+
+@keyframes wheelSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.wheel-spin {
+  animation: wheelSpin 0.9s linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
