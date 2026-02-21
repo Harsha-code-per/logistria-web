@@ -62,6 +62,99 @@ const fadeUp = {
   }),
 };
 
+// ── Per-CSV schema config ───────────────────────────────────────────────────
+type CsvConfig = {
+  label: string;
+  description: string;
+  collection: string;
+  /** Use a single CSV column as the Firestore doc ID */
+  docIdField: string | null;
+  /** Build a composite doc ID from multiple columns joined by "_" */
+  compoundIdFields?: string[];
+  /** These column values are cast to numbers before writing */
+  numericFields: string[];
+  hint: string;
+};
+
+const CSV_CONFIGS: Record<string, CsvConfig> = {
+  inventory: {
+    label: "Inventory",
+    description: "Product stock levels & warehouse locations",
+    collection: "inventory",
+    docIdField: "product_id",
+    numericFields: ["current_stock", "reserved_stock"],
+    hint: "product_id, current_stock, reserved_stock, warehouse_location, last_updated, inventory_type",
+  },
+  logistics_vehicles: {
+    label: "Fleet Vehicles",
+    description: "Trucks & vans with positions and capacity",
+    collection: "trucks",
+    docIdField: "vehicle_id",
+    numericFields: ["capacity_qty", "lat", "lng"],
+    hint: "vehicle_id, type, capacity_qty, delivery_mode, lat, lng",
+  },
+  logistics_customers: {
+    label: "Customers",
+    description: "Customer locations and product demand",
+    collection: "logistics_customers",
+    docIdField: "customer_id",
+    numericFields: ["lat", "lng", "demand_qty", "pin", "cost"],
+    hint: "customer_id, name, lat, lng, demand_qty, product_id, pin, cost",
+  },
+  warehouse: {
+    label: "Warehouses",
+    description: "Warehouse capacity and geo-coordinates",
+    collection: "warehouses",
+    docIdField: "warehouse_id",
+    numericFields: ["max_capacity", "current_occupied", "lat", "lng"],
+    hint: "warehouse_id, name, max_capacity, current_occupied, lat, lng",
+  },
+  bom: {
+    label: "Bill of Materials",
+    description: "Finished-product → component relationships",
+    collection: "bom",
+    docIdField: null,
+    compoundIdFields: ["finished_product_id", "component_product_id"],
+    numericFields: ["quantity_required"],
+    hint: "finished_product_id, component_product_id, quantity_required",
+  },
+  material_planning: {
+    label: "Material Planning",
+    description: "EOQ, safety stock and lead times per material",
+    collection: "material_planning",
+    docIdField: "material_id",
+    numericFields: ["average_daily_demand", "lead_time_days", "safety_stock", "economic_order_quantity"],
+    hint: "material_id, average_daily_demand, lead_time_days, safety_stock, policy_type, economic_order_quantity",
+  },
+  supplier_product: {
+    label: "Supplier Products",
+    description: "Pricing, lead times and quality scores by supplier",
+    collection: "supplier_product",
+    docIdField: null,
+    compoundIdFields: ["supplier_id", "product_id"],
+    numericFields: ["cost_per_unit", "lead_time_days", "minimum_order_quantity", "transport_cost", "quality_score"],
+    hint: "supplier_id, product_id, cost_per_unit, lead_time_days, minimum_order_quantity, transport_cost, quality_score",
+  },
+  supplier_performance: {
+    label: "Supplier Performance",
+    description: "On-time rates, defect rates and delay metrics",
+    collection: "supplier_performance",
+    docIdField: null,
+    compoundIdFields: ["supplier_id", "product_id"],
+    numericFields: ["on_time_delivery_rate", "average_delay_days", "defect_rate"],
+    hint: "supplier_id, product_id, on_time_delivery_rate, average_delay_days, defect_rate, last_updated",
+  },
+  supplier_order_stages: {
+    label: "Supplier Order Stages",
+    description: "Pipeline stages, timings and throughput per supplier",
+    collection: "supplier_order_stages",
+    docIdField: null,
+    compoundIdFields: ["supplier_id", "stage_order"],
+    numericFields: ["stage_order", "avg_time_hours", "max_output_per_day"],
+    hint: "supplier_id, stage_name, stage_order, avg_time_hours, max_output_per_day, description",
+  },
+};
+
 export default function AdminPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -105,7 +198,7 @@ export default function AdminPage() {
   }
 
   // ── Bulk ERP Import state ──────────────────────────────────
-  const [csvCollection, setCsvCollection] = useState<"inventory" | "trucks">("inventory");
+  const [csvCollection, setCsvCollection] = useState<string>("inventory");
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [csvUploading, setCsvUploading] = useState(false);
   const csvInputRef = useRef<HTMLInputElement>(null);
@@ -115,6 +208,7 @@ export default function AdminPage() {
       toast.error("Please select a CSV file first.");
       return;
     }
+    const cfg = CSV_CONFIGS[csvCollection];
     setCsvUploading(true);
     try {
       const results = await new Promise<Papa.ParseResult<Record<string, string>>>(
@@ -126,38 +220,37 @@ export default function AdminPage() {
             error: reject,
           })
       );
-      const rows = results.data;
+      const rows = results.data.filter((r) =>
+        Object.values(r).some((v) => v.trim() !== "")
+      );
       if (rows.length === 0) {
         toast.error("CSV is empty or has no valid rows.");
+        setCsvUploading(false);
         return;
       }
       const batch = writeBatch(db);
       rows.forEach((row) => {
-        if (csvCollection === "inventory") {
-          const ref = doc(collection(db, "inventory"));
-          batch.set(ref, {
-            name: row.name ?? "",
-            category: row.category ?? "",
-            stock: parseFloat(row.stock) || 0,
-            unit: "units",
-            updatedAt: Timestamp.now(),
-          });
+        // Determine document reference
+        let ref;
+        if (cfg.compoundIdFields && cfg.compoundIdFields.length > 0) {
+          const id = cfg.compoundIdFields.map((f) => (row[f] ?? "").trim()).join("_");
+          ref = doc(db, cfg.collection, id);
+        } else if (cfg.docIdField && row[cfg.docIdField]?.trim()) {
+          ref = doc(db, cfg.collection, row[cfg.docIdField].trim());
         } else {
-          const truckId = (row.id ?? row.name ?? "").trim();
-          const ref = truckId
-            ? doc(db, "trucks", truckId)
-            : doc(collection(db, "trucks"));
-          batch.set(ref, {
-            name: truckId || ref.id,
-            lat: parseFloat(row.lat) || 0,
-            lng: parseFloat(row.lng) || 0,
-            status: row.status ?? "IDLE",
-            updatedAt: Timestamp.now(),
-          });
+          ref = doc(collection(db, cfg.collection));
         }
+        // Build data: cast numeric fields, trim all strings
+        const data: Record<string, unknown> = {};
+        for (const [k, v] of Object.entries(row)) {
+          const trimmed = v.trim();
+          data[k] = cfg.numericFields.includes(k) ? (parseFloat(trimmed) || 0) : trimmed;
+        }
+        data.updatedAt = Timestamp.now();
+        batch.set(ref, data);
       });
       await batch.commit();
-      toast.success(`${rows.length} record${rows.length !== 1 ? "s" : ""} imported successfully.`);
+      toast.success(`${rows.length} record${rows.length !== 1 ? "s" : ""} imported into "${cfg.collection}".`);
       setCsvFile(null);
       if (csvInputRef.current) csvInputRef.current.value = "";
     } catch {
@@ -291,7 +384,7 @@ export default function AdminPage() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="max-w-lg"
+          className="max-w-2xl"
         >
           <div
             className="bg-slate-900/50 backdrop-blur-md border border-[#00C9B1]/20 rounded-2xl overflow-hidden"
@@ -306,7 +399,7 @@ export default function AdminPage() {
                 <p className="text-slate-500 text-xs">Batch-ingest records from an ERP export file</p>
               </div>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-5">
               {/* Collection selector */}
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
@@ -314,12 +407,23 @@ export default function AdminPage() {
                 </label>
                 <select
                   value={csvCollection}
-                  onChange={(e) => setCsvCollection(e.target.value as "inventory" | "trucks")}
+                  onChange={(e) => {
+                    setCsvCollection(e.target.value);
+                    setCsvFile(null);
+                    if (csvInputRef.current) csvInputRef.current.value = "";
+                  }}
                   className="w-full h-10 px-3 rounded-md bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00C9B1] transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="inventory">Inventory</option>
-                  <option value="trucks">Trucks</option>
+                  {Object.entries(CSV_CONFIGS).map(([key, cfg]) => (
+                    <option key={key} value={key}>
+                      {cfg.label}
+                    </option>
+                  ))}
                 </select>
+                {/* Description pill */}
+                <p className="text-slate-500 text-xs mt-1">
+                  {CSV_CONFIGS[csvCollection].description}
+                </p>
               </div>
 
               {/* File input */}
@@ -334,11 +438,17 @@ export default function AdminPage() {
                   onChange={(e) => setCsvFile(e.target.files?.[0] ?? null)}
                   className="w-full h-10 text-sm text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#00C9B1]/10 file:text-[#00C9B1] hover:file:bg-[#00C9B1]/20 file:cursor-pointer cursor-pointer bg-black/40 border border-white/10 rounded-md px-3 focus:outline-none focus:border-[#00C9B1] transition-colors"
                 />
-                <p className="text-slate-600 text-xs leading-relaxed">
-                  {csvCollection === "inventory"
-                    ? "Expected columns: name, category, stock"
-                    : "Expected columns: id, lat, lng, status"}
-                </p>
+                {/* Dynamic column hint */}
+                <div className="flex flex-wrap gap-1 pt-0.5">
+                  {CSV_CONFIGS[csvCollection].hint.split(", ").map((col) => (
+                    <span
+                      key={col}
+                      className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-white/5"
+                    >
+                      {col}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <Button
