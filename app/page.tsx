@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -204,7 +206,7 @@ function HeroSection() {
       />
       {/* Grid */}
       <div
-        className="absolute inset-0 opacity-[0.045] pointer-events-none"
+        className="absolute inset-0 opacity-[0.04] dark:opacity-[0.045] pointer-events-none"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,140,0,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,140,0,0.4) 1px, transparent 1px)",
@@ -212,8 +214,8 @@ function HeroSection() {
         }}
       />
       {/* Ambient blobs */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[700px] h-[500px] md:h-[700px] rounded-full bg-[#FF8C00]/4 blur-[120px] pointer-events-none" />
-      <div className="absolute top-2/3 left-1/2 -translate-x-1/2 w-[350px] md:w-[500px] h-[200px] md:h-[300px] rounded-full bg-[#00C9B1]/5 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[700px] h-[500px] md:h-[700px] rounded-full bg-[#FF8C00]/[0.06] dark:bg-[#FF8C00]/[0.04] blur-[120px] pointer-events-none" />
+      <div className="absolute top-2/3 left-1/2 -translate-x-1/2 w-[350px] md:w-[500px] h-[200px] md:h-[300px] rounded-full bg-[#00C9B1]/[0.07] dark:bg-[#00C9B1]/[0.05] blur-[100px] pointer-events-none" />
 
       {/* ── Truck animation ── */}
       <div
@@ -235,6 +237,24 @@ function HeroSection() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
+        {/* Logo mark */}
+        <motion.div
+          custom={-0.1}
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          className="flex justify-center mb-6 sm:mb-8"
+        >
+          <Image
+            src="/logo.png"
+            alt="Logistria"
+            width={96}
+            height={96}
+            className="size-20 sm:size-24 object-contain drop-shadow-[0_0_24px_rgba(255,140,0,0.35)]"
+            priority
+          />
+        </motion.div>
+
         {/* Badge */}
         <motion.div
           custom={0}
@@ -276,10 +296,10 @@ function HeroSection() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="text-slate-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10"
+          className="text-slate-500 dark:text-slate-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10"
         >
           Logistria uses autonomous{" "}
-          <span className="text-white font-semibold">Multi-Agent AI</span> to
+          <span className="text-slate-900 dark:text-white font-semibold">Multi-Agent AI</span> to
           detect disruptions, negotiate with suppliers, and reroute shipments in{" "}
           <span className="text-[#00C9B1] font-semibold">real-time</span> —
           without a single human touchpoint.
@@ -302,7 +322,7 @@ function HeroSection() {
           <Link href="/platform" className="w-full sm:w-auto">
             <Button
               variant="outline"
-              className="w-full sm:w-auto h-12 px-8 bg-slate-900/50 backdrop-blur-md border-white/15 text-white hover:bg-white/10 hover:border-white/30 font-semibold text-base transition-all duration-200"
+              className="w-full sm:w-auto h-12 px-8 bg-white/80 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-white/15 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/30 font-semibold text-base transition-all duration-200"
             >
               <Globe className="size-4 mr-2 text-[#00C9B1]" />
               Explore Platform
@@ -325,10 +345,10 @@ function HeroSection() {
           ].map(({ icon: Icon, text, color }) => (
             <div
               key={text}
-              className="flex items-center gap-2 rounded-full bg-slate-900/60 backdrop-blur border border-white/10 px-3 sm:px-4 py-2"
+              className="flex items-center gap-2 rounded-full bg-white/80 dark:bg-slate-900/60 backdrop-blur border border-slate-200 dark:border-white/10 shadow-sm px-3 sm:px-4 py-2"
             >
               <Icon className="size-3.5" style={{ color }} />
-              <span className="text-slate-300 text-xs font-medium">{text}</span>
+              <span className="text-slate-600 dark:text-slate-300 text-xs font-medium">{text}</span>
             </div>
           ))}
         </motion.div>
@@ -340,14 +360,14 @@ function HeroSection() {
 function TrustBanner() {
   const { ref, inView } = useScrollReveal();
   return (
-    <section ref={ref} className="border-y border-white/[0.06] bg-slate-900/30 backdrop-blur-sm py-8">
+    <section ref={ref} className="border-y border-slate-200 dark:border-white/[0.06] bg-slate-100/60 dark:bg-slate-900/30 backdrop-blur-sm py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.p
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={fadeIn}
           custom={0}
-          className="text-center text-slate-500 text-xs font-semibold tracking-[0.35em] uppercase mb-6"
+          className="text-center text-slate-400 dark:text-slate-500 text-xs font-semibold tracking-[0.35em] uppercase mb-6"
         >
           Trusted by Global Logistics Leaders
         </motion.p>
@@ -361,7 +381,7 @@ function TrustBanner() {
           {CLIENTS.map((name) => (
             <span
               key={name}
-              className="text-slate-500 text-sm font-bold tracking-[0.2em] uppercase hover:text-slate-300 transition-colors cursor-default"
+              className="text-slate-400 dark:text-slate-500 text-sm font-bold tracking-[0.2em] uppercase hover:text-slate-700 dark:hover:text-slate-300 transition-colors cursor-default"
             >
               {name}
             </span>
@@ -384,7 +404,7 @@ function StatsBar() {
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
             variants={fadeUp}
-            className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center hover:border-white/20 transition-colors"
+            className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-2xl p-6 text-center hover:border-slate-300 dark:hover:border-white/20 shadow-sm transition-colors"
           >
             <p
               className="text-3xl font-black mb-1"
@@ -394,7 +414,7 @@ function StatsBar() {
             >
               {s.value}
             </p>
-            <p className="text-slate-400 text-xs uppercase tracking-widest font-medium">{s.label}</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-widest font-medium">{s.label}</p>
           </motion.div>
         ))}
       </div>
@@ -417,7 +437,7 @@ function FeaturesSection() {
         <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-4">
           ◈ Autonomous Workforce
         </p>
-        <h2 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
+        <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4 leading-tight">
           Meet Your New{" "}
           <span
             className="text-transparent bg-clip-text"
@@ -428,7 +448,7 @@ function FeaturesSection() {
             Autonomous Workforce.
           </span>
         </h2>
-        <p className="text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
           Specialized AI agents work 24/7 in parallel — each an expert in its
           domain, collaborating in real-time across the full supply chain graph.
         </p>
@@ -445,10 +465,7 @@ function FeaturesSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               variants={fadeUp}
-              className="group relative bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl p-7 flex flex-col gap-5 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-default"
-              style={{
-                boxShadow: "0 4px 32px rgba(0,0,0,0.4)",
-              }}
+              className="group relative bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-2xl p-7 flex flex-col gap-5 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-default shadow-sm"
             >
               {/* Top glow line on hover */}
               <div
@@ -488,24 +505,21 @@ function FeaturesSection() {
 
               {/* Text */}
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-white/95 transition-colors">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-slate-800 dark:group-hover:text-white/95 transition-colors">
                   {f.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{f.description}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{f.description}</p>
               </div>
 
               {/* Stat */}
-              <div
-                className="border-t pt-5 flex items-end gap-3"
-                style={{ borderColor: "rgba(255,255,255,0.06)" }}
-              >
+              <div className="border-t border-slate-100 dark:border-white/[0.06] pt-5 flex items-end gap-3">
                 <span
                   className="text-3xl font-black leading-none"
                   style={{ color: f.accentColor }}
                 >
                   {f.stat}
                 </span>
-                <span className="text-slate-500 text-xs pb-0.5 leading-tight">
+                <span className="text-slate-400 dark:text-slate-500 text-xs pb-0.5 leading-tight">
                   {f.statLabel}
                 </span>
               </div>
@@ -519,6 +533,11 @@ function FeaturesSection() {
 
 function CtaBanner() {
   const { ref, inView } = useScrollReveal();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = !mounted || resolvedTheme === "dark";
+
   return (
     <section ref={ref} className="py-12 max-w-7xl mx-auto px-4 sm:px-6">
       <motion.div
@@ -528,9 +547,12 @@ function CtaBanner() {
         variants={fadeUp}
         className="relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-16 text-center"
         style={{
-          background:
-            "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%)",
-          boxShadow: "0 0 80px rgba(255,140,0,0.06)",
+          background: isDark
+            ? "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%)"
+            : "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.08) 0%, rgba(248,250,252,0.97) 65%)",
+          boxShadow: isDark
+            ? "0 0 80px rgba(255,140,0,0.06)"
+            : "0 0 80px rgba(255,140,0,0.08), 0 4px 32px rgba(0,0,0,0.06)",
         }}
       >
         {/* Grid overlay */}
@@ -545,7 +567,7 @@ function CtaBanner() {
         <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-5 relative">
           ◈ Get Early Access
         </p>
-        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight relative">
+        <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 leading-tight relative">
           The Future of Logistics
           <br />
           <span
@@ -555,7 +577,7 @@ function CtaBanner() {
             Is Autonomous.
           </span>
         </h2>
-        <p className="text-slate-400 mb-10 max-w-lg mx-auto text-base relative">
+        <p className="text-slate-500 dark:text-slate-400 mb-10 max-w-lg mx-auto text-base relative">
           Join 2,000+ supply chain executives on the waitlist. Be first to
           deploy autonomous AI agents across your network.
         </p>
@@ -577,7 +599,7 @@ function CtaBanner() {
 ───────────────────────────────────────────── */
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#081021] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white overflow-x-hidden transition-colors duration-300">
       <Navbar />
       <HeroSection />
       <TrustBanner />

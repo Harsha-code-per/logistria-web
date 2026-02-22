@@ -1,6 +1,7 @@
 "use client";
 
 import Papa from "papaparse";
+import * as XLSX from "xlsx";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -205,56 +206,91 @@ export default function AdminPage() {
 
   async function handleFileUpload() {
     if (!csvFile) {
-      toast.error("Please select a CSV file first.");
+      toast.error("Please select a file first.");
       return;
     }
     const cfg = CSV_CONFIGS[csvCollection];
     setCsvUploading(true);
-    try {
-      const results = await new Promise<Papa.ParseResult<Record<string, string>>>(
-        (resolve, reject) =>
-          Papa.parse<Record<string, string>>(csvFile, {
-            header: true,
-            skipEmptyLines: true,
-            complete: resolve,
-            error: reject,
-          })
+
+    // Shared Firebase batch-write for any parsed row array
+    async function commitRows(rows: Record<string, unknown>[]) {
+      const filtered = rows.filter((r) =>
+        Object.values(r).some((v) => String(v ?? "").trim() !== "")
       );
-      const rows = results.data.filter((r) =>
-        Object.values(r).some((v) => v.trim() !== "")
-      );
-      if (rows.length === 0) {
-        toast.error("CSV is empty or has no valid rows.");
-        setCsvUploading(false);
+      if (filtered.length === 0) {
+        toast.error("File is empty or has no valid rows.");
         return;
       }
       const batch = writeBatch(db);
-      rows.forEach((row) => {
-        // Determine document reference
+      filtered.forEach((row) => {
         let ref;
         if (cfg.compoundIdFields && cfg.compoundIdFields.length > 0) {
-          const id = cfg.compoundIdFields.map((f) => (row[f] ?? "").trim()).join("_");
+          const id = cfg.compoundIdFields.map((f) => String(row[f] ?? "").trim()).join("_");
           ref = doc(db, cfg.collection, id);
-        } else if (cfg.docIdField && row[cfg.docIdField]?.trim()) {
-          ref = doc(db, cfg.collection, row[cfg.docIdField].trim());
+        } else if (cfg.docIdField && String(row[cfg.docIdField] ?? "").trim()) {
+          ref = doc(db, cfg.collection, String(row[cfg.docIdField]).trim());
         } else {
           ref = doc(collection(db, cfg.collection));
         }
-        // Build data: cast numeric fields, trim all strings
         const data: Record<string, unknown> = {};
         for (const [k, v] of Object.entries(row)) {
-          const trimmed = v.trim();
+          const trimmed = String(v ?? "").trim();
           data[k] = cfg.numericFields.includes(k) ? (parseFloat(trimmed) || 0) : trimmed;
         }
         data.updatedAt = Timestamp.now();
         batch.set(ref, data);
       });
       await batch.commit();
-      toast.success(`${rows.length} record${rows.length !== 1 ? "s" : ""} imported into "${cfg.collection}".`);
+      toast.success(
+        `${filtered.length} record${filtered.length !== 1 ? "s" : ""} imported into "${cfg.collection}".`
+      );
       setCsvFile(null);
       if (csvInputRef.current) csvInputRef.current.value = "";
+    }
+
+    try {
+      const ext = csvFile.name.split(".").pop()?.toLowerCase();
+
+      if (ext === "csv") {
+        // ── CSV path: PapaParse ──────────────────────────────────
+        const results = await new Promise<Papa.ParseResult<Record<string, string>>>(
+          (resolve, reject) =>
+            Papa.parse<Record<string, string>>(csvFile, {
+              header: true,
+              skipEmptyLines: true,
+              complete: resolve,
+              error: reject,
+            })
+        );
+        await commitRows(results.data as Record<string, unknown>[]);
+
+      } else if (ext === "xlsx" || ext === "xls") {
+        // ── Excel path: SheetJS ─────────────────────────────────
+        await new Promise<void>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const buffer = new Uint8Array(e.target!.result as ArrayBuffer);
+              const workbook = XLSX.read(buffer, { type: "array" });
+              const sheetName = workbook.SheetNames[0];
+              const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(
+                workbook.Sheets[sheetName]
+              );
+              await commitRows(jsonData);
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          };
+          reader.onerror = () => reject(reader.error);
+          reader.readAsArrayBuffer(csvFile);
+        });
+
+      } else {
+        toast.error("Unsupported file type. Please upload a .csv, .xlsx, or .xls file.");
+      }
     } catch {
-      toast.error("Failed to process CSV. Check the file format and try again.");
+      toast.error("Failed to process file. Check the format and try again.");
     } finally {
       setCsvUploading(false);
     }
@@ -395,8 +431,8 @@ export default function AdminPage() {
                 <Database className="size-4 text-[#00C9B1]" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-white tracking-wide">Bulk ERP Import (CSV)</h2>
-                <p className="text-slate-500 text-xs">Batch-ingest records from an ERP export file</p>
+                <h2 className="text-sm font-bold text-white tracking-wide">Bulk ERP Import (CSV/Excel)</h2>
+                <p className="text-slate-500 text-xs">Batch-ingest records from a CSV or Excel ERP export</p>
               </div>
             </div>
             <div className="p-6 space-y-5">
@@ -429,12 +465,12 @@ export default function AdminPage() {
               {/* File input */}
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                  CSV File
+                  File (CSV or Excel)
                 </label>
                 <input
                   ref={csvInputRef}
                   type="file"
-                  accept=".csv"
+                  accept=".csv, .xlsx, .xls"
                   onChange={(e) => setCsvFile(e.target.files?.[0] ?? null)}
                   className="w-full h-10 text-sm text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#00C9B1]/10 file:text-[#00C9B1] hover:file:bg-[#00C9B1]/20 file:cursor-pointer cursor-pointer bg-black/40 border border-white/10 rounded-md px-3 focus:outline-none focus:border-[#00C9B1] transition-colors"
                 />
@@ -464,7 +500,7 @@ export default function AdminPage() {
                 ) : (
                   <>
                     <Database className="size-4" />
-                    Process &amp; Upload CSV
+                    Process &amp; Upload File
                   </>
                 )}
               </Button>

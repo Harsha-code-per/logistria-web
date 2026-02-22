@@ -48,7 +48,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-teal-500/20 bg-[#060e1c] mt-8">
+    <footer className="border-t border-slate-200 dark:border-teal-500/20 bg-slate-100 dark:bg-[#060e1c] mt-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
           {/* Brand */}
@@ -56,7 +56,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-4 group w-fit">
               <Zap className="size-5 text-[#FF8C00]" />
               <span
-                className="text-xl font-black tracking-[0.28em] text-white"
+                className="text-xl font-black tracking-[0.28em] text-slate-900 dark:text-white"
                 style={{ fontFamily: "var(--font-geist-mono)" }}
               >
                 LOGISTRIA
@@ -72,7 +72,7 @@ export function Footer() {
           {/* Link columns */}
           {FOOTER_COLS.map((col) => (
             <div key={col.heading}>
-              <p className="text-white text-xs font-bold uppercase tracking-widest mb-4">
+              <p className="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-widest mb-4">
                 {col.heading}
               </p>
               <ul className="space-y-2.5">
@@ -80,7 +80,7 @@ export function Footer() {
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="text-slate-500 text-sm hover:text-slate-300 transition-colors"
+                      className="text-slate-500 text-sm hover:text-slate-800 dark:hover:text-slate-300 transition-colors"
                     >
                       {l.label}
                     </Link>
@@ -92,7 +92,7 @@ export function Footer() {
 
           {/* Waitlist */}
           <div>
-            <p className="text-white text-xs font-bold uppercase tracking-widest mb-2">
+            <p className="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-widest mb-2">
               Join the Waitlist
             </p>
             <p className="text-slate-500 text-sm mb-4">
@@ -111,7 +111,7 @@ export function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-[#00C9B1] h-10 text-sm flex-1 min-w-0"
+                  className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-[#00C9B1] h-10 text-sm flex-1 min-w-0"
                 />
                 <Button
                   type="submit"
@@ -125,11 +125,11 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-slate-600 text-xs">
+        <div className="border-t border-slate-200 dark:border-white/[0.06] pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-slate-400 dark:text-slate-600 text-xs">
           <p>© 2025 Logistria Technologies, Inc. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-5">
             {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((l) => (
-              <button key={l} className="hover:text-slate-400 transition-colors">
+              <button key={l} className="hover:text-slate-700 dark:hover:text-slate-400 transition-colors">
                 {l}
               </button>
             ))}
