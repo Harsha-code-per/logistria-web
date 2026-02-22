@@ -39,10 +39,19 @@ import { toast } from "sonner";
 
 interface InventoryItem {
   id: string;
-  name: string;
-  stock: number;
-  unit: string;
-  category: string;
+  // CSV fields
+  product_id?: string;
+  current_stock?: number;
+  reserved_stock?: number;
+  warehouse_location?: string;
+  inventory_type?: string;
+  last_updated?: string;
+  // legacy fields (kept for backward compatibility)
+  name?: string;
+  stock?: number;
+  unit?: string;
+  category?: string;
+  [key: string]: unknown;
 }
 
 interface Order {
@@ -177,16 +186,30 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    const unsubInv = onSnapshot(collection(db, "inventory"), (snap) => {
-      setInventory(
-        snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<InventoryItem, "id">) }))
-      );
-    });
-    const unsubOrders = onSnapshot(collection(db, "orders"), (snap) => {
-      setOrders(
-        snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Order, "id">) }))
-      );
-    });
+    const unsubInv = onSnapshot(
+      collection(db, "inventory"),
+      (snap) => {
+        setInventory(
+          snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<InventoryItem, "id">) }))
+        );
+      },
+      (err) => {
+        console.error("Inventory snapshot error:", err);
+        toast.error(`Failed to load inventory: ${err.message}`);
+      }
+    );
+    const unsubOrders = onSnapshot(
+      collection(db, "orders"),
+      (snap) => {
+        setOrders(
+          snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Order, "id">) }))
+        );
+      },
+      (err) => {
+        console.error("Orders snapshot error:", err);
+        toast.error(`Failed to load orders: ${err.message}`);
+      }
+    );
     return () => {
       unsubInv();
       unsubOrders();
@@ -527,17 +550,18 @@ export default function AdminPage() {
           <Table>
             <TableHeader>
               <TableRow className="border-slate-100 dark:border-white/10 hover:bg-transparent">
-                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Product</TableHead>
-                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Category</TableHead>
-                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Stock</TableHead>
-                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Unit</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Product ID</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Type</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Current Stock</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Reserved</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Location</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {inventory.length === 0 ? (
                 <TableRow className="border-slate-100 dark:border-white/5">
-                  <TableCell colSpan={4} className="text-center text-slate-400 dark:text-slate-500 py-10 italic">
-                    No inventory data. Click "Initialize World State" to populate.
+                  <TableCell colSpan={5} className="text-center text-slate-400 dark:text-slate-500 py-10 italic">
+                    No inventory data. Upload an inventory CSV to populate.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -546,18 +570,27 @@ export default function AdminPage() {
                     key={item.id}
                     className="border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors"
                   >
-                    <TableCell className="font-semibold text-slate-900 dark:text-white">{item.name}</TableCell>
+                    <TableCell className="font-semibold text-slate-900 dark:text-white font-mono text-sm">
+                      {item.product_id ?? item.name ?? item.id}
+                    </TableCell>
                     <TableCell>
                       <Badge className="bg-[#00C9B1]/10 text-[#00C9B1] border border-[#00C9B1]/30 hover:bg-[#00C9B1]/20">
-                        {item.category}
+                        {item.inventory_type ?? item.category ?? "—"}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-[#FF8C00] font-mono font-bold">
-                      {typeof item.stock === "number"
-                        ? Math.floor(item.stock).toLocaleString()
-                        : item.stock}
+                      {item.current_stock !== undefined
+                        ? Math.floor(Number(item.current_stock)).toLocaleString()
+                        : item.stock !== undefined
+                        ? Math.floor(Number(item.stock)).toLocaleString()
+                        : "—"}
                     </TableCell>
-                    <TableCell className="text-slate-500 dark:text-slate-400">{item.unit}</TableCell>
+                    <TableCell className="text-slate-500 dark:text-slate-400 font-mono text-sm">
+                      {item.reserved_stock !== undefined ? Math.floor(Number(item.reserved_stock)).toLocaleString() : "—"}
+                    </TableCell>
+                    <TableCell className="text-slate-500 dark:text-slate-400 text-sm">
+                      {item.warehouse_location ?? item.unit ?? "—"}
+                    </TableCell>
                   </TableRow>
                 ))
               )}
