@@ -144,3 +144,13 @@
   transform-origin: center;
   transform-box: fill-box;
 }
+
+/* ── Shared CTA banner background (light/dark) ─────────────────── */
+.cta-banner-bg {
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.08) 0%, rgba(248,250,252,0.97) 65%);
+  box-shadow: 0 0 80px rgba(255,140,0,0.08), 0 4px 32px rgba(0,0,0,0.06);
+}
+.dark .cta-banner-bg {
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%);
+  box-shadow: 0 0 80px rgba(255,140,0,0.06);
+}

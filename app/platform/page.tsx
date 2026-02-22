@@ -96,7 +96,7 @@ export default function PlatformPage() {
   const integrations = useReveal();
 
   return (
-    <div className="min-h-screen bg-[#081021] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white overflow-x-hidden">
       <Navbar />
 
       {/* ── Hero ── */}
@@ -122,7 +122,7 @@ export default function PlatformPage() {
           </motion.h1>
 
           <motion.p custom={0.2} initial="hidden" animate={hero.inView ? "visible" : "hidden"} variants={fadeUp}
-            className="text-slate-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+            className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
             The Logistria Platform is the operating system for modern supply chains — unifying real-time data, autonomous AI agents, and execution across your entire network.
           </motion.p>
 
@@ -134,7 +134,7 @@ export default function PlatformPage() {
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" className="h-12 px-8 bg-slate-900/50 border-white/15 text-white hover:bg-white/10 hover:border-white/30 transition-all">
+              <Button variant="outline" className="h-12 px-8 bg-white/80 dark:bg-slate-900/50 border-slate-200 dark:border-white/15 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/30 transition-all">
                 View Pricing
               </Button>
             </Link>
@@ -146,13 +146,13 @@ export default function PlatformPage() {
       <section ref={caps.ref} className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div custom={0} initial="hidden" animate={caps.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-14">
           <p className="text-[#00C9B1] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Core Capabilities</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
             Built for{" "}
             <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
               Enterprise Scale
             </span>
           </h2>
-          <p className="text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
+          <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
             Six pillars that work as one — delivering end-to-end supply chain intelligence at the speed of AI.
           </p>
         </motion.div>
@@ -162,17 +162,17 @@ export default function PlatformPage() {
             const Icon = c.icon;
             return (
               <motion.div key={c.title} custom={0.08 * i} initial="hidden" animate={caps.inView ? "visible" : "hidden"} variants={fadeUp}
-                className="group bg-slate-900/50 border border-white/10 rounded-2xl p-6 hover:border-white/20 hover:-translate-y-1 transition-all duration-300">
+                className="group bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 shadow-sm rounded-2xl p-6 hover:border-slate-300 dark:hover:border-white/20 hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2.5 rounded-xl" style={{ backgroundColor: `${c.color}15`, border: `1px solid ${c.color}30` }}>
                     <Icon className="size-5" style={{ color: c.color }} />
                   </div>
-                  <h3 className="font-bold text-white text-sm">{c.title}</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">{c.title}</h3>
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-5">{c.desc}</p>
-                <div className="border-t border-white/[0.06] pt-4 flex items-end gap-2">
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-5">{c.desc}</p>
+                <div className="border-t border-slate-100 dark:border-white/[0.06] pt-4 flex items-end gap-2">
                   <span className="text-2xl font-black" style={{ color: c.color }}>{c.metric}</span>
-                  <span className="text-slate-500 text-xs pb-0.5">{c.metricLabel}</span>
+                  <span className="text-slate-400 dark:text-slate-500 text-xs pb-0.5">{c.metricLabel}</span>
                 </div>
               </motion.div>
             );
@@ -181,11 +181,11 @@ export default function PlatformPage() {
       </section>
 
       {/* ── Architecture ── */}
-      <section ref={arch.ref} className="py-20 border-y border-white/[0.06] bg-slate-900/20">
+      <section ref={arch.ref} className="py-20 border-y border-slate-200 dark:border-white/[0.06] bg-slate-100/50 dark:bg-slate-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div custom={0} initial="hidden" animate={arch.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-14">
             <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ How It Works</p>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
               From Raw Signal to{" "}
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
                 Autonomous Action
@@ -199,13 +199,13 @@ export default function PlatformPage() {
 
             {ARCH_STEPS.map((s, i) => (
               <motion.div key={s.num} custom={0.1 * i} initial="hidden" animate={arch.inView ? "visible" : "hidden"} variants={fadeUp}
-                className="relative bg-slate-900/50 border border-white/10 rounded-2xl p-6 text-center hover:border-white/20 transition-colors">
+                className="relative bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 shadow-sm rounded-2xl p-6 text-center hover:border-slate-300 dark:hover:border-white/20 transition-colors">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 text-sm font-black"
                   style={{ background: i % 2 === 0 ? "rgba(255,140,0,0.15)" : "rgba(0,201,177,0.15)", color: i % 2 === 0 ? "#FF8C00" : "#00C9B1", border: `1px solid ${i % 2 === 0 ? "#FF8C00" : "#00C9B1"}30` }}>
                   {s.num}
                 </div>
-                <h3 className="text-white font-bold mb-2">{s.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{s.desc}</p>
+                <h3 className="text-slate-900 dark:text-white font-bold mb-2">{s.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -216,26 +216,26 @@ export default function PlatformPage() {
       <section ref={integrations.ref} className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div custom={0} initial="hidden" animate={integrations.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-12">
           <p className="text-[#00C9B1] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Integrations</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
             Connects to Your{" "}
             <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
               Existing Stack
             </span>
           </h2>
-          <p className="text-slate-400 max-w-xl mx-auto">Pre-built connectors for the tools your team already uses. Go live in days, not months.</p>
+          <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Pre-built connectors for the tools your team already uses. Go live in days, not months.</p>
         </motion.div>
 
         <motion.div custom={0.15} initial="hidden" animate={integrations.inView ? "visible" : "hidden"} variants={fadeUp}
           className="flex flex-wrap justify-center gap-3">
           {INTEGRATIONS.map((name) => (
-            <div key={name} className="flex items-center gap-2 bg-slate-900/60 border border-white/10 rounded-xl px-5 py-3 hover:border-[#00C9B1]/30 transition-colors">
+            <div key={name} className="flex items-center gap-2 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 rounded-xl px-5 py-3 hover:border-[#00C9B1]/30 transition-colors">
               <CheckCircle2 className="size-3.5 text-[#00C9B1]" />
-              <span className="text-slate-300 text-sm font-medium">{name}</span>
+              <span className="text-slate-600 dark:text-slate-300 text-sm font-medium">{name}</span>
             </div>
           ))}
-          <div className="flex items-center gap-2 bg-slate-900/30 border border-dashed border-white/10 rounded-xl px-5 py-3">
-            <Layers className="size-3.5 text-slate-500" />
-            <span className="text-slate-500 text-sm">+ 190 more via API</span>
+          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900/30 border border-dashed border-slate-200 dark:border-white/10 rounded-xl px-5 py-3">
+            <Layers className="size-3.5 text-slate-400 dark:text-slate-500" />
+            <span className="text-slate-400 dark:text-slate-500 text-sm">+ 190 more via API</span>
           </div>
         </motion.div>
 
@@ -257,12 +257,11 @@ export default function PlatformPage() {
 
       {/* ── CTA ── */}
       <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-16 text-center"
-          style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%)", boxShadow: "0 0 80px rgba(255,140,0,0.06)" }}>
+        <div className="cta-banner-bg relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-16 text-center">
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{ backgroundImage: "linear-gradient(rgba(255,140,0,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,140,0,1) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4 relative">Ready to Deploy?</h2>
-          <p className="text-slate-400 mb-8 max-w-lg mx-auto relative">Start a free 30-day trial. No credit card required. Full platform access from day one.</p>
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4 relative">Ready to Deploy?</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-lg mx-auto relative">Start a free 30-day trial. No credit card required. Full platform access from day one.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
             <Link href="/login">
               <Button className="h-12 px-8 bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold tracking-wider shadow-xl shadow-[#FF8C00]/30 hover:scale-[1.02] transition-all">
@@ -270,7 +269,7 @@ export default function PlatformPage() {
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" className="h-12 px-8 bg-slate-900/50 border-white/15 text-white hover:bg-white/10 hover:border-white/30 transition-all">
+              <Button variant="outline" className="h-12 px-8 bg-white/80 dark:bg-slate-900/50 border-slate-200 dark:border-white/15 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/30 transition-all">
                 Compare Plans
               </Button>
             </Link>

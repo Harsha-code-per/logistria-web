@@ -114,7 +114,7 @@ export default function PricingPage() {
   const discount = billing === "annual" ? 0.83 : 1;
 
   return (
-    <div className="min-h-screen bg-[#081021] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white overflow-x-hidden">
       <Navbar />
 
       {/* ── Hero ── */}
@@ -138,16 +138,16 @@ export default function PricingPage() {
           </motion.h1>
 
           <motion.p custom={0.2} initial="hidden" animate={hero.inView ? "visible" : "hidden"} variants={fadeUp}
-            className="text-slate-400 text-lg max-w-xl mx-auto mb-10">
+            className="text-slate-500 dark:text-slate-400 text-lg max-w-xl mx-auto mb-10">
             Start free. Scale as you grow. Every plan includes a 30-day trial with full platform access.
           </motion.p>
 
           {/* Billing toggle */}
           <motion.div custom={0.3} initial="hidden" animate={hero.inView ? "visible" : "hidden"} variants={fadeUp}
-            className="inline-flex items-center bg-slate-900/60 border border-white/10 rounded-full p-1">
+            className="inline-flex items-center bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-full p-1">
             {(["monthly", "annual"] as const).map((b) => (
               <button key={b} onClick={() => setBilling(b)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${billing === b ? "bg-[#FF8C00] text-black shadow-lg" : "text-slate-400 hover:text-white"}`}>
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${billing === b ? "bg-[#FF8C00] text-black shadow-lg" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"}`}>
                 {b === "monthly" ? "Monthly" : "Annual"}
                 {b === "annual" && <span className="ml-2 text-[10px] font-bold bg-[#00C9B1]/20 text-[#00C9B1] px-1.5 py-0.5 rounded-full">2 months free</span>}
               </button>
@@ -164,7 +164,7 @@ export default function PricingPage() {
             const price = plan.monthlyPrice ? Math.round(plan.monthlyPrice * discount) : null;
             return (
               <motion.div key={plan.name} custom={0.08 * i} initial="hidden" animate={plans.inView ? "visible" : "hidden"} variants={fadeUp}
-                className={`relative bg-slate-900/50 border rounded-2xl overflow-hidden transition-all duration-300 ${plan.highlight ? "border-[#FF8C00]/40 shadow-2xl shadow-[#FF8C00]/10" : "border-white/10 hover:border-white/20"}`}
+                className={`relative border rounded-2xl overflow-hidden transition-all duration-300 ${plan.highlight ? "bg-slate-100 dark:bg-slate-800/80 border-[#FF8C00]/40 shadow-2xl shadow-[#FF8C00]/10" : "bg-white dark:bg-slate-900/50 border-slate-200 dark:border-white/10 shadow-sm hover:border-slate-300 dark:hover:border-white/20"}`}
                 style={plan.highlight ? { boxShadow: "0 0 60px rgba(255,140,0,0.08)" } : {}}>
 
                 {plan.highlight && (
@@ -181,38 +181,38 @@ export default function PricingPage() {
                     <div className="p-2.5 rounded-xl" style={{ backgroundColor: `${plan.color}15`, border: `1px solid ${plan.color}30` }}>
                       <Icon className="size-5" style={{ color: plan.color }} />
                     </div>
-                    <h3 className="text-xl font-black text-white">{plan.name}</h3>
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white">{plan.name}</h3>
                   </div>
-                  <p className="text-slate-400 text-sm mb-6 leading-relaxed">{plan.tagline}</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 leading-relaxed">{plan.tagline}</p>
 
                   <div className="mb-6">
                     {price ? (
                       <div className="flex items-end gap-2">
                         <span className="text-4xl font-black" style={{ color: plan.color }}>${price.toLocaleString()}</span>
-                        <span className="text-slate-400 text-sm mb-1.5">/month</span>
+                        <span className="text-slate-500 dark:text-slate-400 text-sm mb-1.5">/month</span>
                       </div>
                     ) : (
                       <span className="text-4xl font-black" style={{ color: plan.color }}>Custom</span>
                     )}
                     {billing === "annual" && price && (
-                      <p className="text-slate-500 text-xs mt-1">Billed annually (${(price * 12).toLocaleString()}/yr)</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Billed annually (${(price * 12).toLocaleString()}/yr)</p>
                     )}
                   </div>
 
                   <Link href={plan.ctaHref} className="block">
-                    <Button className={`w-full h-11 font-bold tracking-wider text-sm transition-all ${plan.highlight ? "bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black shadow-lg shadow-[#FF8C00]/25" : "bg-slate-800 hover:bg-slate-700 text-white border border-white/10"}`}>
+                    <Button className={`w-full h-11 font-bold tracking-wider text-sm transition-all ${plan.highlight ? "bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black shadow-lg shadow-[#FF8C00]/25" : "bg-white/80 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10"}`}>
                       {plan.cta} <ArrowRight className="size-4 ml-1" />
                     </Button>
                   </Link>
                 </div>
 
-                <div className="border-t border-white/[0.06] px-7 py-5 space-y-3">
+                <div className="border-t border-slate-100 dark:border-white/[0.06] px-7 py-5 space-y-3">
                   {plan.features.map((f) => (
                     <div key={f.label} className="flex items-center gap-3">
                       {f.included
                         ? <CheckCircle2 className="size-4 shrink-0" style={{ color: plan.color }} />
                         : <X className="size-4 shrink-0 text-slate-600" />}
-                      <span className={`text-sm ${f.included ? "text-slate-300" : "text-slate-600"}`}>{f.label}</span>
+                      <span className={`text-sm ${f.included ? "text-slate-600 dark:text-slate-300" : "text-slate-400 dark:text-slate-600"}`}>{f.label}</span>
                     </div>
                   ))}
                 </div>
@@ -223,7 +223,7 @@ export default function PricingPage() {
 
         {/* Enterprise footnote */}
         <motion.p custom={0.3} initial="hidden" animate={plans.inView ? "visible" : "hidden"} variants={fadeUp}
-          className="text-center text-slate-500 text-sm mt-8">
+          className="text-center text-slate-500 dark:text-slate-400 text-sm mt-8">
           All plans include SOC 2 Type II compliance, 99.97% SLA, and 24/7 support. &nbsp;
           <Link href="/about" className="text-[#00C9B1] hover:underline">Contact sales</Link> for volume discounts.
         </motion.p>
@@ -233,15 +233,15 @@ export default function PricingPage() {
       <section ref={faq.ref} className="py-20 max-w-3xl mx-auto px-4 sm:px-6">
         <motion.div custom={0} initial="hidden" animate={faq.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-12">
           <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ FAQ</p>
-          <h2 className="text-3xl font-black text-white">Common Questions</h2>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white">Common Questions</h2>
         </motion.div>
 
         <div className="space-y-4">
           {FAQS.map((item, i) => (
             <motion.div key={item.q} custom={0.07 * i} initial="hidden" animate={faq.inView ? "visible" : "hidden"} variants={fadeUp}
-              className="bg-slate-900/50 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-colors">
-              <p className="text-white font-semibold mb-2">{item.q}</p>
-              <p className="text-slate-400 text-sm leading-relaxed">{item.a}</p>
+              className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl p-6 hover:border-slate-300 dark:hover:border-white/20 transition-colors">
+              <p className="text-slate-900 dark:text-white font-semibold mb-2">{item.q}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.a}</p>
             </motion.div>
           ))}
         </div>
@@ -249,10 +249,9 @@ export default function PricingPage() {
 
       {/* CTA */}
       <section className="pb-20 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-14 text-center"
-          style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%)", boxShadow: "0 0 80px rgba(255,140,0,0.06)" }}>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Start Your Free Trial Today</h2>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">30 days. Full access. No credit card. Cancel anytime.</p>
+        <div className="cta-banner-bg relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-14 text-center">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">Start Your Free Trial Today</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">30 days. Full access. No credit card. Cancel anytime.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/login">
               <Button className="h-12 px-8 bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold tracking-wider shadow-xl shadow-[#FF8C00]/30 hover:scale-[1.02] transition-all">
@@ -260,7 +259,7 @@ export default function PricingPage() {
               </Button>
             </Link>
             <Link href="/about">
-              <Button variant="outline" className="h-12 px-8 bg-slate-900/50 border-white/15 text-white hover:bg-white/10 hover:border-white/30 transition-all">
+              <Button variant="outline" className="h-12 px-8 bg-white/80 dark:bg-slate-900/50 border-slate-200 dark:border-white/15 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 transition-all">
                 Talk to Sales
               </Button>
             </Link>

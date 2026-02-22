@@ -54,7 +54,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#081021] flex items-center justify-center p-4 overflow-hidden relative">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#081021] flex items-center justify-center p-4 overflow-hidden relative">
       {/* Animated grid background */}
       <div
         className="absolute inset-0 opacity-10"
@@ -85,7 +85,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-center gap-3 mb-2">
             <Zap className="size-8 text-[#FF8C00]" />
             <h1
-              className="text-4xl font-black tracking-[0.25em] text-white"
+              className="text-4xl font-black tracking-[0.25em] text-slate-900 dark:text-white"
               style={{ fontFamily: "var(--font-geist-mono)" }}
             >
               LOGISTRIA
@@ -97,9 +97,9 @@ export default function LoginPage() {
         </motion.div>
 
         {/* Card */}
-        <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl p-8 shadow-2xl shadow-black/50">
+        <div className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 shadow-sm rounded-2xl p-8 shadow-2xl shadow-black/50">
           {/* Mode toggle */}
-          <div className="flex rounded-lg bg-black/30 p-1 mb-8 border border-white/5">
+          <div className="flex rounded-lg bg-slate-100 dark:bg-black/30 p-1 mb-8 border border-slate-200 dark:border-white/5">
             {(["login", "register"] as const).map((m) => (
               <button
                 key={m}
@@ -107,7 +107,7 @@ export default function LoginPage() {
                 className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-300 ${
                   mode === m
                     ? "bg-[#FF8C00] text-black shadow-lg shadow-[#FF8C00]/30"
-                    : "text-slate-400 hover:text-white"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 {m === "login" ? "Sign In" : "Register Client"}
@@ -126,7 +126,7 @@ export default function LoginPage() {
               className="space-y-5"
             >
               <div className="space-y-2">
-                <Label className="text-slate-300 text-xs tracking-widest uppercase">
+                <Label className="text-slate-600 dark:text-slate-300 text-xs tracking-widest uppercase">
                   Corporate Email
                 </Label>
                 <Input
@@ -135,12 +135,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 focus:border-[#FF8C00] focus:ring-[#FF8C00]/20 h-11"
+                  className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#FF8C00] focus:ring-[#FF8C00]/20 h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label className="text-slate-300 text-xs tracking-widest uppercase">
+                <Label className="text-slate-600 dark:text-slate-300 text-xs tracking-widest uppercase">
                   Access Key
                 </Label>
                 <Input
@@ -149,7 +149,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 focus:border-[#FF8C00] focus:ring-[#FF8C00]/20 h-11"
+                  className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#FF8C00] focus:ring-[#FF8C00]/20 h-11"
                 />
               </div>
 
@@ -170,7 +170,7 @@ export default function LoginPage() {
             </motion.form>
           </AnimatePresence>
 
-          <p className="text-center text-slate-500 text-xs mt-6">
+          <p className="text-center text-slate-400 dark:text-slate-500 text-xs mt-6">
             {mode === "login" ? (
               <>
                 New corporate client?{" "}

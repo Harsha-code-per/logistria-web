@@ -299,14 +299,14 @@ export default function AdminPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#081021] flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#081021] flex items-center justify-center">
         <Loader2 className="size-8 text-[#FF8C00] animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#081021] text-white">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white">
       {/* Ambient grid */}
       <div
         className="fixed inset-0 opacity-[0.04] pointer-events-none"
@@ -322,18 +322,18 @@ export default function AdminPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 bg-[#081021]/80 backdrop-blur-xl border-b border-white/10 px-6 py-4"
+        className="sticky top-0 z-50 bg-white/80 dark:bg-[#081021]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 px-6 py-4"
       >
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Zap className="size-6 text-[#FF8C00]" />
             <span
-              className="text-lg font-black tracking-[0.2em] text-white"
+              className="text-lg font-black tracking-[0.2em] text-slate-900 dark:text-white"
               style={{ fontFamily: "var(--font-geist-mono)" }}
             >
               LOGISTRIA
             </span>
-            <span className="hidden sm:block text-white/20 mx-2">|</span>
+            <span className="hidden sm:block text-slate-300 dark:text-white/20 mx-2">|</span>
             <span className="hidden sm:block text-slate-400 text-sm font-medium tracking-widest uppercase">
               Admin Portal
             </span>
@@ -366,7 +366,7 @@ export default function AdminPage() {
         >
           <div className="flex items-center gap-3 mb-1">
             <Globe className="size-7 text-[#FF8C00]" />
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
               Global Operations Control
             </h1>
           </div>
@@ -390,7 +390,7 @@ export default function AdminPage() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-xl p-4 flex items-center gap-4"
+              className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-xl p-4 flex items-center gap-4"
             >
               <div
                 className="p-2 rounded-lg"
@@ -402,7 +402,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <p className="text-xs text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest">{stat.label}</p>
                 <p
                   className="text-xl font-bold"
                   style={{ color: stat.color }}
@@ -423,15 +423,15 @@ export default function AdminPage() {
           className="max-w-2xl"
         >
           <div
-            className="bg-slate-900/50 backdrop-blur-md border border-[#00C9B1]/20 rounded-2xl overflow-hidden"
+            className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-[#00C9B1]/20 rounded-2xl overflow-hidden"
             style={{ boxShadow: "0 0 40px rgba(0,201,177,0.07)" }}
           >
-            <div className="px-6 py-4 border-b border-white/10 flex items-center gap-3">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-white/10 flex items-center gap-3">
               <div className="p-2 rounded-lg bg-[#00C9B1]/10 border border-[#00C9B1]/20">
                 <Database className="size-4 text-[#00C9B1]" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-white tracking-wide">Bulk ERP Import (CSV/Excel)</h2>
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white tracking-wide">Bulk ERP Import (CSV/Excel)</h2>
                 <p className="text-slate-500 text-xs">Batch-ingest records from a CSV or Excel ERP export</p>
               </div>
             </div>
@@ -448,7 +448,7 @@ export default function AdminPage() {
                     setCsvFile(null);
                     if (csvInputRef.current) csvInputRef.current.value = "";
                   }}
-                  className="w-full h-10 px-3 rounded-md bg-black/40 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00C9B1] transition-colors appearance-none cursor-pointer"
+                  className="w-full h-10 px-3 rounded-md bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[#00C9B1] transition-colors appearance-none cursor-pointer"
                 >
                   {Object.entries(CSV_CONFIGS).map(([key, cfg]) => (
                     <option key={key} value={key}>
@@ -472,14 +472,14 @@ export default function AdminPage() {
                   type="file"
                   accept=".csv, .xlsx, .xls"
                   onChange={(e) => setCsvFile(e.target.files?.[0] ?? null)}
-                  className="w-full h-10 text-sm text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#00C9B1]/10 file:text-[#00C9B1] hover:file:bg-[#00C9B1]/20 file:cursor-pointer cursor-pointer bg-black/40 border border-white/10 rounded-md px-3 focus:outline-none focus:border-[#00C9B1] transition-colors"
+                  className="w-full h-10 text-sm text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#00C9B1]/10 file:text-[#00C9B1] hover:file:bg-[#00C9B1]/20 file:cursor-pointer cursor-pointer bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-md px-3 focus:outline-none focus:border-[#00C9B1] transition-colors"
                 />
                 {/* Dynamic column hint */}
                 <div className="flex flex-wrap gap-1 pt-0.5">
                   {CSV_CONFIGS[csvCollection].hint.split(", ").map((col) => (
                     <span
                       key={col}
-                      className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-white/5"
+                      className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/5"
                     >
                       {col}
                     </span>
@@ -512,31 +512,31 @@ export default function AdminPage() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden"
+          className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden"
         >
-          <div className="px-6 py-4 border-b border-white/10 flex items-center gap-3">
+          <div className="px-6 py-4 border-b border-slate-200 dark:border-white/10 flex items-center gap-3">
             <Package className="size-5 text-[#00C9B1]" />
-            <h2 className="text-base font-bold text-white tracking-wide">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">
               Live Inventory
             </h2>
-            <span className="ml-auto text-xs text-slate-500 flex items-center gap-1">
+            <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
               <div className="size-1.5 rounded-full bg-[#00C9B1] animate-pulse" />
               REAL-TIME
             </span>
           </div>
           <Table>
             <TableHeader>
-              <TableRow className="border-white/10 hover:bg-transparent">
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Product</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Category</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Stock</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Unit</TableHead>
+              <TableRow className="border-slate-100 dark:border-white/10 hover:bg-transparent">
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Product</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Category</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Stock</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Unit</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {inventory.length === 0 ? (
-                <TableRow className="border-white/5">
-                  <TableCell colSpan={4} className="text-center text-slate-500 py-10 italic">
+                <TableRow className="border-slate-100 dark:border-white/5">
+                  <TableCell colSpan={4} className="text-center text-slate-400 dark:text-slate-500 py-10 italic">
                     No inventory data. Click "Initialize World State" to populate.
                   </TableCell>
                 </TableRow>
@@ -544,9 +544,9 @@ export default function AdminPage() {
                 inventory.map((item) => (
                   <TableRow
                     key={item.id}
-                    className="border-white/5 hover:bg-white/[0.02] transition-colors"
+                    className="border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors"
                   >
-                    <TableCell className="font-semibold text-white">{item.name}</TableCell>
+                    <TableCell className="font-semibold text-slate-900 dark:text-white">{item.name}</TableCell>
                     <TableCell>
                       <Badge className="bg-[#00C9B1]/10 text-[#00C9B1] border border-[#00C9B1]/30 hover:bg-[#00C9B1]/20">
                         {item.category}
@@ -557,7 +557,7 @@ export default function AdminPage() {
                         ? Math.floor(item.stock).toLocaleString()
                         : item.stock}
                     </TableCell>
-                    <TableCell className="text-slate-400">{item.unit}</TableCell>
+                    <TableCell className="text-slate-500 dark:text-slate-400">{item.unit}</TableCell>
                   </TableRow>
                 ))
               )}
@@ -571,32 +571,32 @@ export default function AdminPage() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden"
+          className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden"
         >
-          <div className="px-6 py-4 border-b border-white/10 flex items-center gap-3">
+          <div className="px-6 py-4 border-b border-slate-200 dark:border-white/10 flex items-center gap-3">
             <ClipboardList className="size-5 text-[#FF8C00]" />
-            <h2 className="text-base font-bold text-white tracking-wide">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">
               Incoming Orders
             </h2>
-            <span className="ml-auto text-xs text-slate-500 flex items-center gap-1">
+            <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
               <div className="size-1.5 rounded-full bg-[#FF8C00] animate-pulse" />
               REAL-TIME
             </span>
           </div>
           <Table>
             <TableHeader>
-              <TableRow className="border-white/10 hover:bg-transparent">
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Product</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Quantity</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Client</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Status</TableHead>
-                <TableHead className="text-slate-400 uppercase text-xs tracking-widest">Received</TableHead>
+              <TableRow className="border-slate-100 dark:border-white/10 hover:bg-transparent">
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Product</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Quantity</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Client</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Status</TableHead>
+                <TableHead className="text-slate-500 dark:text-slate-400 uppercase text-xs tracking-widest">Received</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {orders.length === 0 ? (
-                <TableRow className="border-white/5">
-                  <TableCell colSpan={5} className="text-center text-slate-500 py-10 italic">
+                <TableRow className="border-slate-100 dark:border-white/5">
+                  <TableCell colSpan={5} className="text-center text-slate-400 dark:text-slate-500 py-10 italic">
                     No orders yet. Orders placed from the storefront will appear here.
                   </TableCell>
                 </TableRow>
@@ -604,11 +604,11 @@ export default function AdminPage() {
                 orders.map((order) => (
                   <TableRow
                     key={order.id}
-                    className="border-white/5 hover:bg-white/[0.02] transition-colors"
+                    className="border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors"
                   >
-                    <TableCell className="font-semibold text-white">{order.productName}</TableCell>
-                    <TableCell className="font-mono text-white">{order.quantity}</TableCell>
-                    <TableCell className="text-slate-400 text-sm">{order.userEmail}</TableCell>
+                    <TableCell className="font-semibold text-slate-900 dark:text-white">{order.productName}</TableCell>
+                    <TableCell className="font-mono text-slate-900 dark:text-white">{order.quantity}</TableCell>
+                    <TableCell className="text-slate-500 dark:text-slate-400 text-sm">{order.userEmail}</TableCell>
                     <TableCell>
                       <Badge
                         className={
@@ -622,7 +622,7 @@ export default function AdminPage() {
                         {order.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-slate-500 text-sm">
+                    <TableCell className="text-slate-400 dark:text-slate-500 text-sm">
                       {order.timestamp
                         ? new Date(order.timestamp.toDate()).toLocaleString()
                         : "—"}

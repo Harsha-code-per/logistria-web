@@ -159,14 +159,14 @@ export default function StorePage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#081021] flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#081021] flex items-center justify-center">
         <Loader2 className="size-8 text-[#00C9B1] animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#081021] text-white">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white">
       {/* Ambient grid */}
       <div
         className="fixed inset-0 opacity-[0.035] pointer-events-none"
@@ -186,25 +186,25 @@ export default function StorePage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 bg-[#081021]/80 backdrop-blur-xl border-b border-white/10 px-6 py-4"
+        className="sticky top-0 z-50 bg-white/80 dark:bg-[#081021]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 px-6 py-4"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Zap className="size-6 text-[#FF8C00]" />
             <span
-              className="text-lg font-black tracking-[0.2em] text-white"
+              className="text-lg font-black tracking-[0.2em] text-slate-900 dark:text-white"
               style={{ fontFamily: "var(--font-geist-mono)" }}
             >
               LOGISTRIA
             </span>
             <span className="hidden sm:block text-white/20 mx-2">|</span>
-            <span className="hidden sm:block text-slate-400 text-xs tracking-[0.2em] uppercase font-semibold">
+            <span className="hidden sm:block text-slate-500 dark:text-slate-400 text-xs tracking-[0.2em] uppercase font-semibold">
               B2B Procurement
             </span>
           </div>
           <div className="flex items-center gap-4">
             {user && (
-              <span className="text-slate-500 text-sm hidden md:block truncate max-w-[200px]">
+              <span className="text-slate-400 dark:text-slate-500 text-sm hidden md:block truncate max-w-[200px]">
                 {user.email}
               </span>
             )}
@@ -212,7 +212,7 @@ export default function StorePage() {
               variant="ghost"
               size="sm"
               onClick={handleSignOut}
-              className="text-slate-400 hover:text-white hover:bg-white/10 border border-white/10"
+              className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10"
             >
               <LogOut className="size-4" />
               <span className="hidden sm:inline ml-1">Sign Out</span>
@@ -237,7 +237,7 @@ export default function StorePage() {
           >
             ◈ Enterprise-Grade Supply Chain
           </motion.p>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 leading-tight">
             Logistria{" "}
             <span
               className="text-transparent bg-clip-text"
@@ -249,7 +249,7 @@ export default function StorePage() {
               B2B Procurement
             </span>
           </h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
+          <p className="text-slate-500 dark:text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
             Source mission-critical components directly from the global supply
             chain. Instant order routing. Guaranteed traceability.
           </p>
@@ -260,10 +260,10 @@ export default function StorePage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-12 space-y-10"
+          className="bg-white dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-3xl p-12 space-y-10 shadow-sm"
         >
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-bold text-white">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
               Create Supply Order
             </h2>
             {selectedProduct && (
@@ -277,7 +277,7 @@ export default function StorePage() {
             <select
               value={selectedProductId}
               onChange={(e) => setSelectedProductId(e.target.value)}
-              className="bg-black/40 border border-white/10 text-white rounded-xl p-4 text-lg"
+              className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl p-4 text-lg"
             >
               <option value="">Select Product</option>
               {CATALOG.map((product) => (
@@ -290,7 +290,7 @@ export default function StorePage() {
             <Input
               value={selectedProduct?.id || ""}
               disabled
-              className="bg-black/40 border-white/10 text-white text-lg"
+              className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-lg"
               placeholder="Product ID"
             />
 
@@ -301,28 +301,28 @@ export default function StorePage() {
               onChange={(e) =>
                 setQuantity(Math.max(1, parseInt(e.target.value) || 1))
               }
-              className="bg-black/40 border-white/10 text-white text-lg"
+              className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-lg"
               placeholder="Quantity"
             />
 
             <Input
               value={selectedProduct ? `$${numericPrice.toLocaleString()}` : ""}
               disabled
-              className="bg-black/40 border-white/10 text-white text-lg"
+              className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-lg"
               placeholder="Unit Price"
             />
 
             <Input
               value={selectedProduct ? `$${totalPrice.toLocaleString()}` : ""}
               disabled
-              className="bg-black/40 border-white/10 text-white text-lg md:col-span-2"
+              className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-lg md:col-span-2"
               placeholder="Total Price"
             />
 
             <Input
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="bg-black/40 border-white/10 text-white text-lg md:col-span-2"
+              className="bg-white dark:bg-black/40 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-lg md:col-span-2"
               placeholder="Delivery Location"
             />
           </div>

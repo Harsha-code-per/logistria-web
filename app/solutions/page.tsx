@@ -102,7 +102,7 @@ export default function SolutionsPage() {
   const outcomes = useReveal();
 
   return (
-    <div className="min-h-screen bg-[#081021] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white overflow-x-hidden">
       <Navbar />
 
       {/* ── Hero ── */}
@@ -128,7 +128,7 @@ export default function SolutionsPage() {
           </motion.h1>
 
           <motion.p custom={0.2} initial="hidden" animate={hero.inView ? "visible" : "hidden"} variants={fadeUp}
-            className="text-slate-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+            className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
             Logistria&apos;s AI agents are pre-trained on the specific challenges, regulations, and metrics that define each industry. Not a generic platform — a specialist in yours.
           </motion.p>
 
@@ -140,7 +140,7 @@ export default function SolutionsPage() {
               </Button>
             </Link>
             <Link href="/platform">
-              <Button variant="outline" className="h-12 px-8 bg-slate-900/50 border-white/15 text-white hover:bg-white/10 hover:border-white/30 transition-all">
+              <Button variant="outline" className="h-12 px-8 bg-white/80 dark:bg-slate-900/50 border-slate-200 dark:border-white/15 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/30 transition-all">
                 Explore Platform
               </Button>
             </Link>
@@ -156,7 +156,7 @@ export default function SolutionsPage() {
             const isRight = i % 2 === 1;
             return (
               <motion.div key={ind.title} custom={0.08 * i} initial="hidden" animate={industries.inView ? "visible" : "hidden"} variants={fadeUp}
-                className="group bg-slate-900/50 border border-white/10 rounded-2xl p-7 sm:p-10 hover:border-white/20 transition-all duration-300 overflow-hidden relative">
+                className="group bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 shadow-sm rounded-2xl p-7 sm:p-10 hover:border-slate-300 dark:hover:border-white/20 transition-all duration-300 overflow-hidden relative">
                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
                   style={{ background: `radial-gradient(ellipse 50% 60% at ${isRight ? "80%" : "20%"} 50%, ${ind.color}08 0%, transparent 70%)` }} />
 
@@ -172,20 +172,20 @@ export default function SolutionsPage() {
                         {ind.tag}
                       </span>
                     </div>
-                    <h3 className="text-2xl font-black text-white mb-3">{ind.title}</h3>
-                    <p className="text-slate-400 leading-relaxed mb-6">{ind.overview}</p>
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">{ind.title}</h3>
+                    <p className="text-slate-500 dark:text-slate-400 leading-relaxed mb-6">{ind.overview}</p>
                     <div className="flex items-end gap-3">
                       <span className="text-4xl font-black" style={{ color: ind.color }}>{ind.metric}</span>
-                      <span className="text-slate-500 text-sm pb-1">{ind.metricLabel}</span>
+                      <span className="text-slate-400 dark:text-slate-500 text-sm pb-1">{ind.metricLabel}</span>
                     </div>
                   </div>
 
                   {/* Right — benefit list */}
                   <div className="space-y-3">
                     {ind.benefits.map((b) => (
-                      <div key={b} className="flex items-start gap-3 bg-black/20 rounded-xl p-3.5 border border-white/5">
+                      <div key={b} className="flex items-start gap-3 bg-slate-50 dark:bg-black/20 rounded-xl p-3.5 border border-slate-100 dark:border-white/5">
                         <CheckCircle2 className="size-4 mt-0.5 shrink-0" style={{ color: ind.color }} />
-                        <span className="text-slate-300 text-sm leading-snug">{b}</span>
+                        <span className="text-slate-600 dark:text-slate-300 text-sm leading-snug">{b}</span>
                       </div>
                     ))}
                   </div>
@@ -197,11 +197,11 @@ export default function SolutionsPage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section ref={how.ref} className="py-20 border-t border-white/[0.06] bg-slate-900/20">
+      <section ref={how.ref} className="py-20 border-t border-slate-200 dark:border-white/[0.06] bg-slate-100/50 dark:bg-slate-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div custom={0} initial="hidden" animate={how.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-12">
             <p className="text-[#00C9B1] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Getting Started</p>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
               Live in{" "}
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
                 72 Hours
@@ -214,14 +214,14 @@ export default function SolutionsPage() {
               const Icon = step.icon;
               return (
                 <motion.div key={step.title} custom={0.1 * i} initial="hidden" animate={how.inView ? "visible" : "hidden"} variants={fadeUp}
-                  className="bg-slate-900/50 border border-white/10 rounded-2xl p-7 text-center hover:border-white/20 transition-colors">
+                  className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 shadow-sm rounded-2xl p-7 text-center hover:border-slate-300 dark:hover:border-white/20 transition-colors">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4"
                     style={{ background: i % 2 === 0 ? "rgba(255,140,0,0.12)" : "rgba(0,201,177,0.12)", border: `1px solid ${i % 2 === 0 ? "#FF8C00" : "#00C9B1"}30` }}>
                     <Icon className="size-5" style={{ color: i % 2 === 0 ? "#FF8C00" : "#00C9B1" }} />
                   </div>
                   <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: i % 2 === 0 ? "#FF8C00" : "#00C9B1" }}>Step {i + 1}</p>
-                  <h3 className="text-white font-bold text-lg mb-2">{step.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                  <h3 className="text-slate-900 dark:text-white font-bold text-lg mb-2">{step.title}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{step.desc}</p>
                 </motion.div>
               );
             })}
@@ -241,10 +241,10 @@ export default function SolutionsPage() {
             const Icon = s.icon;
             return (
               <motion.div key={s.label} custom={0.08 * i} initial="hidden" animate={outcomes.inView ? "visible" : "hidden"} variants={fadeUp}
-                className="bg-slate-900/50 border border-white/10 rounded-2xl p-6 text-center hover:border-white/20 transition-colors">
+                className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 shadow-sm rounded-2xl p-6 text-center hover:border-slate-300 dark:hover:border-white/20 transition-colors">
                 <Icon className="size-5 mx-auto mb-3" style={{ color: s.color }} />
                 <p className="text-3xl font-black mb-1" style={{ color: s.color }}>{s.value}</p>
-                <p className="text-slate-400 text-xs uppercase tracking-widest">{s.label}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-widest">{s.label}</p>
               </motion.div>
             );
           })}
@@ -253,10 +253,9 @@ export default function SolutionsPage() {
 
       {/* CTA */}
       <section className="pb-20 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-14 text-center"
-          style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%)", boxShadow: "0 0 80px rgba(255,140,0,0.06)" }}>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Find Your Industry Solution</h2>
-          <p className="text-slate-400 mb-8 max-w-lg mx-auto">Book a personalised demo tailored to your industry&apos;s specific supply chain challenges.</p>
+        <div className="cta-banner-bg relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-14 text-center">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">Find Your Industry Solution</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-lg mx-auto">Book a personalised demo tailored to your industry&apos;s specific supply chain challenges.</p>
           <Link href="/login">
             <Button className="h-12 px-8 bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold tracking-wider shadow-xl shadow-[#FF8C00]/30 hover:scale-[1.02] transition-all">
               Request Industry Demo <ArrowRight className="size-4 ml-1" />

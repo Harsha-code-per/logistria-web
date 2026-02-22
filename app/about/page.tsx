@@ -71,7 +71,7 @@ export default function AboutPage() {
   const team = useReveal();
 
   return (
-    <div className="min-h-screen bg-[#081021] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#081021] text-slate-900 dark:text-white overflow-x-hidden">
       <Navbar />
 
       {/* ── Hero ── */}
@@ -98,28 +98,28 @@ export default function AboutPage() {
           </motion.h1>
 
           <motion.p custom={0.2} initial="hidden" animate={hero.inView ? "visible" : "hidden"} variants={fadeUp}
-            className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
             Logistria was founded on a simple belief: the world&apos;s supply chains are too important, too complex, and too fragile to be managed by spreadsheets and phone calls. We set out to build something better.
           </motion.p>
         </div>
       </section>
 
       {/* ── Mission ── */}
-      <section className="py-16 border-y border-white/[0.06] bg-slate-900/30">
+      <section className="py-16 border-y border-slate-200 dark:border-white/[0.06] bg-slate-100/50 dark:bg-slate-900/20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Our Mission</p>
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-5 leading-tight">
+              <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-5 leading-tight">
                 Make Every Supply Chain{" "}
                 <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
                   Autonomous.
                 </span>
               </h2>
-              <p className="text-slate-400 leading-relaxed mb-4">
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
                 Global supply chains feed, clothe, and power civilisation. Yet they&apos;re still managed with manual processes that haven&apos;t changed since the 1980s. A port closes in Rotterdam and it takes 48 hours for a procurement manager to know — and another 48 to act.
               </p>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
                 Logistria changes that. Our multi-agent AI detects the closure in real-time, evaluates 200+ alternative routes, negotiates with carriers, and reroutes shipments — in 4.2 seconds. No email. No spreadsheet. No delay.
               </p>
             </div>
@@ -130,12 +130,12 @@ export default function AboutPage() {
                 { icon: Lock, label: "Security", desc: "SOC 2 Type II certified. Enterprise-grade data protection", color: "#FF8C00" },
                 { icon: Users, label: "Culture", desc: "Remote-first, outcome-obsessed, mission-driven", color: "#00C9B1" },
               ].map(({ icon: Icon, label, desc, color }) => (
-                <div key={label} className="bg-slate-900/50 border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-colors">
+                <div key={label} className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl p-5 hover:border-slate-300 dark:hover:border-white/20 transition-colors shadow-sm">
                   <div className="p-2 rounded-lg mb-3 w-fit" style={{ backgroundColor: `${color}15`, border: `1px solid ${color}30` }}>
                     <Icon className="size-4" style={{ color }} />
                   </div>
-                  <p className="text-white font-bold text-sm mb-1">{label}</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">{desc}</p>
+                  <p className="text-slate-900 dark:text-white font-bold text-sm mb-1">{label}</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-xs leading-relaxed">{desc}</p>
                 </div>
               ))}
             </div>
@@ -148,9 +148,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {STATS.map((s, i) => (
             <motion.div key={s.label} custom={0.07 * i} initial="hidden" animate={stats.inView ? "visible" : "hidden"} variants={fadeUp}
-              className="bg-slate-900/50 border border-white/10 rounded-2xl p-6 text-center hover:border-white/20 transition-colors">
+              className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl p-6 text-center hover:border-slate-300 dark:hover:border-white/20 transition-colors shadow-sm">
               <p className="text-3xl font-black mb-1" style={{ color: s.color }}>{s.value}</p>
-              <p className="text-slate-400 text-xs uppercase tracking-widest">{s.label}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-widest">{s.label}</p>
             </motion.div>
           ))}
         </div>
@@ -160,7 +160,7 @@ export default function AboutPage() {
       <section ref={values.ref} className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div custom={0} initial="hidden" animate={values.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-12">
           <p className="text-[#00C9B1] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Our Values</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
             How We{" "}
             <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
               Build & Operate
@@ -173,12 +173,12 @@ export default function AboutPage() {
             const Icon = v.icon;
             return (
               <motion.div key={v.title} custom={0.07 * i} initial="hidden" animate={values.inView ? "visible" : "hidden"} variants={fadeUp}
-                className="bg-slate-900/50 border border-white/10 rounded-2xl p-6 hover:border-white/20 hover:-translate-y-1 transition-all duration-300">
+                className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl p-6 hover:border-slate-300 dark:hover:border-white/20 hover:-translate-y-1 transition-all duration-300 shadow-sm">
                 <div className="p-2.5 rounded-xl mb-4 w-fit" style={{ backgroundColor: `${v.color}15`, border: `1px solid ${v.color}30` }}>
                   <Icon className="size-5" style={{ color: v.color }} />
                 </div>
-                <h3 className="text-white font-bold mb-2">{v.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{v.desc}</p>
+                <h3 className="text-slate-900 dark:text-white font-bold mb-2">{v.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{v.desc}</p>
               </motion.div>
             );
           })}
@@ -186,11 +186,11 @@ export default function AboutPage() {
       </section>
 
       {/* ── Timeline ── */}
-      <section ref={timeline.ref} className="py-20 border-y border-white/[0.06] bg-slate-900/20">
+      <section ref={timeline.ref} className="py-20 border-y border-slate-200 dark:border-white/[0.06] bg-slate-100/50 dark:bg-slate-900/20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <motion.div custom={0} initial="hidden" animate={timeline.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-12">
             <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Journey</p>
-            <h2 className="text-3xl md:text-4xl font-black text-white">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
               From Idea to{" "}
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
                 Global Platform
@@ -208,10 +208,10 @@ export default function AboutPage() {
                   className={`relative flex items-start gap-6 sm:gap-0 ${i % 2 === 0 ? "sm:flex-row" : "sm:flex-row-reverse"}`}>
                   {/* Content */}
                   <div className={`flex-1 ${i % 2 === 0 ? "sm:pr-12 sm:text-right" : "sm:pl-12"} pl-10 sm:pl-0`}>
-                    <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-colors">
+                    <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl p-5 hover:border-slate-300 dark:hover:border-white/20 transition-colors shadow-sm">
                       <span className="text-xs font-bold tracking-widest uppercase mb-1 block" style={{ color: i % 2 === 0 ? "#FF8C00" : "#00C9B1" }}>{item.year}</span>
-                      <h3 className="text-white font-bold mb-1">{item.event}</h3>
-                      <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                      <h3 className="text-slate-900 dark:text-white font-bold mb-1">{item.event}</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                   {/* Dot */}
@@ -230,13 +230,13 @@ export default function AboutPage() {
       <section ref={team.ref} className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div custom={0} initial="hidden" animate={team.inView ? "visible" : "hidden"} variants={fadeUp} className="text-center mb-12">
           <p className="text-[#00C9B1] text-xs font-bold tracking-[0.35em] uppercase mb-4">◈ Leadership</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
             Built by Supply Chain{" "}
             <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF8C00, #00C9B1)" }}>
               Obsessives
             </span>
           </h2>
-          <p className="text-slate-400 max-w-xl mx-auto mt-4 text-base">
+          <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto mt-4 text-base">
             Our team combines deep expertise in AI, supply chain operations, enterprise software, and global logistics.
           </p>
         </motion.div>
@@ -244,18 +244,18 @@ export default function AboutPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {TEAM.map((member, i) => (
             <motion.div key={member.name} custom={0.06 * i} initial="hidden" animate={team.inView ? "visible" : "hidden"} variants={fadeUp}
-              className="bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-center hover:border-white/20 transition-colors group">
-              <div className={`w-14 h-14 rounded-full mx-auto mb-3 bg-gradient-to-br ${member.bg} flex items-center justify-center border border-white/10`}>
-                <Users className="size-6 text-slate-400" />
+              className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl p-5 text-center hover:border-slate-300 dark:hover:border-white/20 transition-colors group shadow-sm">
+              <div className={`w-14 h-14 rounded-full mx-auto mb-3 bg-gradient-to-br ${member.bg} flex items-center justify-center border border-slate-200 dark:border-white/10`}>
+                <Users className="size-6 text-slate-500 dark:text-slate-400" />
               </div>
-              <p className="text-white font-bold text-xs mb-1">{member.name}</p>
-              <p className="text-slate-500 text-[10px] leading-tight">{member.role}</p>
+              <p className="text-slate-900 dark:text-white font-bold text-xs mb-1">{member.name}</p>
+              <p className="text-slate-400 dark:text-slate-500 text-[10px] leading-tight">{member.role}</p>
             </motion.div>
           ))}
         </div>
 
         <motion.p custom={0.4} initial="hidden" animate={team.inView ? "visible" : "hidden"} variants={fadeUp}
-          className="text-center text-slate-500 text-sm mt-10">
+          className="text-center text-slate-400 dark:text-slate-500 text-sm mt-10">
           We&apos;re hiring across engineering, AI research, and customer success. &nbsp;
           <span className="text-[#00C9B1] cursor-pointer hover:underline">View open roles →</span>
         </motion.p>
@@ -263,13 +263,12 @@ export default function AboutPage() {
 
       {/* ── CTA ── */}
       <section className="pb-20 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-14 text-center"
-          style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,140,0,0.06) 0%, rgba(8,16,33,0.9) 70%)", boxShadow: "0 0 80px rgba(255,140,0,0.06)" }}>
+        <div className="cta-banner-bg relative rounded-3xl border border-[#FF8C00]/20 overflow-hidden p-10 md:p-14 text-center">
           <p className="text-[#FF8C00] text-xs font-bold tracking-[0.35em] uppercase mb-5">◈ Join Us</p>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
             Ready to Modernise<br />Your Supply Chain?
           </h2>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">
+          <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
             Talk to our team. Get a personalised walkthrough of how Logistria can transform your operations.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -279,7 +278,7 @@ export default function AboutPage() {
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" className="h-12 px-8 bg-slate-900/50 border-white/15 text-white hover:bg-white/10 hover:border-white/30 transition-all">
+              <Button variant="outline" className="h-12 px-8 bg-white/80 dark:bg-slate-900/50 border-slate-200 dark:border-white/15 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 transition-all">
                 See Pricing
               </Button>
             </Link>
